@@ -163,8 +163,8 @@ export const loginServices = async (req, res) => {
 
             const option = {
                 httpOnly: true,
-                secure: false,      // local frontend is not HTTPS
-                sameSite: "none",   // allow cross-site cookies
+                secure: false,
+                sameSite: "lax",   // not "none"
                 path: "/",
                 maxAge: 24 * 60 * 60 * 1000
             };
@@ -201,8 +201,8 @@ export const logoutServices = (req, res) => {
     try {
         const option = {
             httpOnly: true,
-            secure: false,      // local frontend is not HTTPS
-            sameSite: "none",   // allow cross-site cookies
+            secure: false,
+            sameSite: "lax",   // not "none"
             path: "/",
             maxAge: 0
         };
