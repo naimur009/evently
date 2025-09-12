@@ -163,10 +163,10 @@ export const loginServices = async (req, res) => {
 
             const option = {
                 httpOnly: true,
-                secure: true,
-                sameSite: "none",
+                secure: false,      // local frontend is not HTTPS
+                sameSite: "none",   // allow cross-site cookies
                 path: "/",
-                maxAge: 24 * 60 * 60 * 1000,
+                maxAge: 24 * 60 * 60 * 1000
             };
             res.cookie("Token", userToken, option);
             return {
@@ -201,8 +201,8 @@ export const logoutServices = (req, res) => {
     try {
         const option = {
             httpOnly: true,
-            secure: true,
-            sameSite: "none",
+            secure: false,      // local frontend is not HTTPS
+            sameSite: "none",   // allow cross-site cookies
             path: "/",
             maxAge: 0
         };
