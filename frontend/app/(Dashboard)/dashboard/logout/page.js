@@ -3,7 +3,7 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import api from "@/app/libs/axios";
 
-const page = () => {
+const Page = () => {
     const router = useRouter();
 
     useEffect(()=>{
@@ -12,7 +12,7 @@ const page = () => {
             router.push("/");
         }
         logout();
-    }, [])
+    }, [router])
 
     return
         <div>
@@ -20,4 +20,4 @@ const page = () => {
         </div>
 };
 
-export default page;
+export default Page;

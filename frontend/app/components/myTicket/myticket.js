@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { Download, MapPin, CalendarDays, Ticket } from "lucide-react";
+import Image from "next/image";
 
 const MyTicketsPage = ({ tickets }) => {
 
@@ -44,10 +45,13 @@ const MyTicketsPage = ({ tickets }) => {
                 className="flex flex-col sm:flex-row items-center bg-white rounded-xl shadow-md border border-gray-200 p-4 transition-all duration-300 hover:shadow-xl hover:scale-[1.01]"
               >
                 {/* Image */}
-                <img
+                <Image
                   src={ticket.eventDetails.image}
                   alt={ticket.eventDetails.event_title}
+                  width={400}
+                  height={400}
                   className="w-full h-48 sm:w-24 sm:h-24 object-cover rounded-lg mr-0 sm:mr-6 mb-4 sm:mb-0"
+                  unoptimized
                 />
 
                 {/* Info */}

@@ -1,4 +1,5 @@
 import api from "@/app/libs/axios";
+import Image from "next/image";
 import Link from "next/link";
 
 
@@ -42,10 +43,13 @@ const FeaturedEventsListSection = async () => {
               className="group relative overflow-hidden rounded-2xl bg-white/70 backdrop-blur-lg border border-gray-200 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-500"
             >
               <div className="relative">
-                <img
-                  src={event.image || `https://placehold.co/1200x600/60a5fa/ffffff?text=${event.event_title.split(" ").join("+")}`}
+                <Image
+                  src={event.image}
                   alt={event.event_title}
+                  width={1200}
+                  height={600}
                   className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"
+                  unoptimized
                 />
                 <span className="absolute top-3 left-3 bg-white/80 text-gray-900 text-xs font-semibold px-3 py-1 rounded-full shadow-md">
                   {event.category.categoryName}

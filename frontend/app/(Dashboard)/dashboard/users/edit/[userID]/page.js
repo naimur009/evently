@@ -2,9 +2,10 @@
 import api from '@/app/libs/axios';
 import { useRouter } from 'next/navigation';
 import React, { useState, useEffect } from 'react';
+import Image from "next/image";
 
-// The main App component that renders the user info page.
-export default function App({ params }) {
+// The main Page component that renders the user info page.
+export default function Page({ params }) {
   const [user, setUser] = useState(null);
   const [formData, setFormData] = useState(null);
   const [message, setMessage] = useState('');
@@ -24,7 +25,7 @@ export default function App({ params }) {
     }
     fetchUserdata();
 
-  }, []);
+  }, [params]);
 
   // Handle form input changes
   const handleChange = (e) => {
@@ -138,10 +139,13 @@ export default function App({ params }) {
 
           {/* Profile Header and Image */}
           <div className="flex flex-col items-center">
-            <img
+            <Image
               src={`https://placehold.co/1200x600/60a5fa/ffffff?text=${formData.name[0]}`}
               alt={`${formData.name}'s profile`}
+              width={128}
+              height={128}
               className="w-32 h-32 rounded-full object-cover border-4 border-gray-200 shadow-md transform hover:scale-105 transition-transform"
+              unoptimized
             />
             <p className="text-sm text-gray-500 mt-2 text-center">Click on the image to upload a new one.</p>
           </div>

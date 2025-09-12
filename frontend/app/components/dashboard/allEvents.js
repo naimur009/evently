@@ -1,7 +1,7 @@
 
 import { MapPin, DollarSign, Users, Clock, Edit, Trash2, User, Percent, Tag, CalendarDays } from 'lucide-react';
 import Link from 'next/link';
-import CouponManager from './coupon';
+import Image from 'next/image';
 import CouponList from './coupon';
 
 export default function EventDetailsPage({ data }) {
@@ -48,10 +48,13 @@ export default function EventDetailsPage({ data }) {
                 <section className="bg-white rounded-3xl shadow-lg overflow-hidden max-w-7xl mx-auto my-6">
                     {/* Event Image */}
                     <div className="relative w-full h-56 sm:h-72 md:h-80 lg:h-96">
-                        <img
-                            src={event.image || `https://placehold.co/1200x600/60a5fa/ffffff?text=${event.event_title.split(" ").join("+")}`}
+                        <Image
+                            src={event.image}
                             alt={event.event_title}
                             className="w-full h-full object-cover"
+                            width={1200}
+                            height={600}
+                            unoptimized
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
                     </div>

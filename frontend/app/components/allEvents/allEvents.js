@@ -2,6 +2,7 @@
 import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
+import Image from "next/image";
 
 
 const CalendarIcon = () => (
@@ -23,15 +24,10 @@ const cardVariants = {
 };
 
 const EventsPage = ({ events }) => {
-    if (!events || !Array.isArray(events) || events.length === 0) {
-        return <p className="text-center text-gray-600 mt-10">Loading events...</p>;
-    }
+
     const [currentPage, setCurrentPage] = useState(1);
     const [searchQuery, setSearchQuery] = useState("");
     const [filterCategory, setFilterCategory] = useState("All");
-
-    const eventsPerPage = 4;
-    const categories = ["All", ...new Set(events.map(e => e.category.categoryName))];
 
     // Apply search and category filters only
     const filteredEvents = useMemo(() => {
@@ -44,7 +40,17 @@ const EventsPage = ({ events }) => {
 
             return matchesSearch && matchesCategory;
         });
-    }, [searchQuery, filterCategory]);
+    }, [searchQuery, filterCategory, events]);
+
+    if (!events || !Array.isArray(events) || events.length === 0) {
+        return <p className="text-center text-gray-600 mt-10">Loading events...</p>;
+    }
+    
+
+    const eventsPerPage = 4;
+    const categories = ["All", ...new Set(events.map(e => e.category.categoryName))];
+
+    
 
     // Pagination
     const indexOfLastEvent = currentPage * eventsPerPage;
@@ -124,10 +130,13 @@ const EventsPage = ({ events }) => {
                                     className="group cursor-pointer rounded-3xl overflow-hidden border border-gray-200 bg-white/30 backdrop-blur-md shadow-lg hover:shadow-2xl transition-all duration-500 flex flex-col"
                                 >
                                     <div className="relative">
-                                        <img
-                                            src={event.image || `https://placehold.co/1200x600/60a5fa/ffffff?text=${event.event_title.split(" ").join("+")}`}
+                                        <Image
+                                            src={event.image}
                                             alt={event.event_title}
+                                            width={1200}
+                                            height={600}
                                             className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"
+                                            unoptimized
                                         />
                                         <span className="absolute top-3 left-3 bg-white/80 text-gray-900 text-xs font-semibold px-3 py-1 rounded-full shadow-md">
                                             {event.category.categoryName}

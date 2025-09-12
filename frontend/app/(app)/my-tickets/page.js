@@ -4,12 +4,14 @@ import MyTicketsPage from '../../components/myTicket/myticket';
 import api from '@/app/libs/axios';
 
 
-const page = () => {
+const Page = () => {
 
   const [events, setEvents] = useState(null);
   const [dataFetch, setDataFetch] = useState(false)
 
-  document.title = `My Tickets`;
+  useEffect(() => {
+    document.title = "My Tickets";
+  }, []);
 
   useEffect(() => {
     const fetchTickets = async () => {
@@ -36,4 +38,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

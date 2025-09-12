@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 // Main App component to display the Hero Section
 const HeroSection = () => {
@@ -32,26 +33,35 @@ const HeroSection = () => {
           <div className="grid grid-cols-2 grid-rows-2 gap-4 w-full max-w-lg">
             {/* First image */}
             <div className="col-span-1 row-span-1 group">
-              <img 
-                src="https://placehold.co/400x400/60a5fa/ffffff?text=CONCERT" 
+              <Image
+                src="https://placehold.co/400x400/60a5fa/ffffff?text=CONCERT"
                 alt="A lively concert scene"
+                width={400}
+                height={400}
                 className="w-full h-full object-cover rounded-xl shadow-lg transition-all duration-300 transform group-hover:scale-105 group-hover:shadow-xl"
+                unoptimized
               />
             </div>
             {/* Second image */}
             <div className="col-span-1 row-span-1 group">
-              <img 
-                src="https://placehold.co/400x400/f87171/ffffff?text=SPORTS" 
+              <Image
+                src="https://placehold.co/400x400/f87171/ffffff?text=SPORTS"
                 alt="An exciting sports game"
+                width={400}
+                height={400}
                 className="w-full h-full object-cover rounded-xl shadow-lg transition-all duration-300 transform group-hover:scale-105 group-hover:shadow-xl"
+                unoptimized
               />
             </div>
             {/* Third image, spanning two columns */}
             <div className="col-span-2 group">
-              <img 
-                src="https://placehold.co/800x400/4ade80/ffffff?text=THEATER" 
+              <Image
+                src="https://placehold.co/800x400/4ade80/ffffff?text=THEATER"
                 alt="A dramatic theater performance"
+                width={800}
+                height={400}
                 className="w-full h-full object-cover rounded-xl shadow-lg transition-all duration-300 transform group-hover:scale-105 group-hover:shadow-xl"
+                unoptimized
               />
             </div>
           </div>

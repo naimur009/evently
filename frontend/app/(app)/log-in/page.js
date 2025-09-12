@@ -190,7 +190,7 @@ const LoginPage = () => {
             </Link>
           </p>
           <p>
-            Don't have an account?{" "}
+            Don&apos;t have an account?{" "}
             <Link href="/sign-up" className="font-medium text-blue-600 hover:text-blue-500 transition-colors">
               Sign up
             </Link>

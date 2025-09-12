@@ -13,6 +13,7 @@ import {
     Captions,
 } from "lucide-react";
 import api from "@/app/libs/axios";
+import Image from "next/image";
 
 // Main component for the Create Event page.
 const CreateEventPage = ({ params }) => {
@@ -32,7 +33,7 @@ const CreateEventPage = ({ params }) => {
         }
         fetchData();
 
-    }, [])
+    }, [params])
 
     // console.log(formData.category.categoryName);
 
@@ -109,40 +110,40 @@ const CreateEventPage = ({ params }) => {
         }
     };
 
-    const FormInput = ({ label, name, type, icon, error, ...props }) => (
-        <div className="relative mb-5">
-            <label
-                htmlFor={name}
-                className="block text-sm font-medium text-gray-700 mb-1"
-            >
-                {label}
-            </label>
-            <div className="relative">
-                {icon && (
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
-                        {icon}
-                    </div>
-                )}
-                <input
-                    type={type}
-                    id={name}
-                    name={name}
-                    onChange={handleInputChange}
-                    className={`
-            mt-1 block w-full pl-10 pr-3 py-3 border rounded-lg shadow-sm
-            focus:ring-indigo-500 focus:border-indigo-500 text-sm
-            ${error ? "border-red-500" : "border-gray-300"}
-          `}
-                    {...props}
-                />
-            </div>
-            {error && (
-                <span className="text-red-500 text-xs mt-1 absolute left-0">
-                    {error}
-                </span>
-            )}
-        </div>
-    );
+    // const FormInput = ({ label, name, type, icon, error, ...props }) => (
+    //     <div className="relative mb-5">
+    //         <label
+    //             htmlFor={name}
+    //             className="block text-sm font-medium text-gray-700 mb-1"
+    //         >
+    //             {label}
+    //         </label>
+    //         <div className="relative">
+    //             {icon && (
+    //                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+    //                     {icon}
+    //                 </div>
+    //             )}
+    //             <input
+    //                 type={type}
+    //                 id={name}
+    //                 name={name}
+    //                 onChange={handleInputChange}
+    //                 className={`
+    //         mt-1 block w-full pl-10 pr-3 py-3 border rounded-lg shadow-sm
+    //         focus:ring-indigo-500 focus:border-indigo-500 text-sm
+    //         ${error ? "border-red-500" : "border-gray-300"}
+    //       `}
+    //                 {...props}
+    //             />
+    //         </div>
+    //         {error && (
+    //             <span className="text-red-500 text-xs mt-1 absolute left-0">
+    //                 {error}
+    //             </span>
+    //         )}
+    //     </div>
+    // );
 
     return (
         <div className="min-h-screen bg-gray-100 p-4 md:p-6 flex items-center justify-center font-sans">
@@ -375,10 +376,13 @@ const CreateEventPage = ({ params }) => {
                             <div className="mt-1 flex justify-center items-center px-4 pt-4 pb-5 border-2 border-gray-300 border-dashed rounded-lg">
                                 <div className="space-y-1 text-center">
                                     {formData.image ? (
-                                        <img
+                                        <Image
                                             src={formData.image}
                                             alt="Event Preview"
+                                            width={400}
+                                            height={128}
                                             className="mx-auto h-28 sm:h-32 w-full max-w-xs object-cover rounded-lg shadow-md"
+                                            unoptimized
                                         />
                                     ) : (
                                         <ImageIcon className="mx-auto h-10 w-10 text-gray-400" />

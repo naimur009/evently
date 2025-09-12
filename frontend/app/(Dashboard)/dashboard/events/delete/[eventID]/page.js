@@ -3,7 +3,7 @@ import api from "@/app/libs/axios";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
-const page = ({ params }) => {
+const Page = ({ params }) => {
 
     const router = useRouter();
 
@@ -21,7 +21,7 @@ const page = ({ params }) => {
             }
         }
         deleteFunc();
-    }, [])
+    }, [params, router])
 };
 
-export default page;
+export default Page;

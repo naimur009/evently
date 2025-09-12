@@ -13,6 +13,7 @@ import {
   Clock,
 } from "lucide-react";
 import api from "@/app/libs/axios";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 const CreateEventPage = () => {
@@ -320,10 +321,13 @@ const CreateEventPage = () => {
               <div className="mt-1 flex justify-center items-center px-4 pt-4 pb-5 border-2 border-gray-300 border-dashed rounded-lg">
                 <div className="space-y-1 text-center">
                   {formData.image ? (
-                    <img
+                    <Image
                       src={formData.image}
                       alt="Event Preview"
+                      width={400}
+                      height={128}
                       className="mx-auto h-28 sm:h-32 w-full max-w-xs object-cover rounded-lg shadow-md"
+                      unoptimized
                     />
                   ) : (
                     <ImageIcon className="mx-auto h-10 w-10 text-gray-400" />

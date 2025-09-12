@@ -4,7 +4,7 @@ import api from '@/app/libs/axios';
 import React, { useEffect, useState } from 'react';
 
 
-const page = ({ params }) => {
+const Page = ({ params }) => {
 
     const [event, setEvent] = useState(null);
 
@@ -20,7 +20,7 @@ const page = ({ params }) => {
             }
         }
         fetchData();
-    }, []);
+    }, [params]);
     if (event) {
         return (
             <div>
@@ -33,4 +33,4 @@ const page = ({ params }) => {
     }
 };
 
-export default page;
+export default Page;
