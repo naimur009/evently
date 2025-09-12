@@ -17,7 +17,7 @@ const app = express();
 // security middleware
 app.use(cookieParser());
 app.use(cors({
-  origin: "http://localhost:3000", // frontend URL
+  origin: true, // frontend URL
   credentials: true                // allow cookies to be sent
 }));
 app.use(helmet());

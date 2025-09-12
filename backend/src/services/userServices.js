@@ -100,7 +100,7 @@ export const verifyUserServices = async (req, res) => {
                         isVerified: true,
                         isActive: true,
                         verification_code: 0,
-                        status:"Active"
+                        status: "Active"
                     }
                 }
             )
@@ -162,11 +162,11 @@ export const loginServices = async (req, res) => {
             const userToken = encodeToken(user.email, user._id, user.role);
 
             const option = {
-                httpOnly: false,  // JS can read
-                secure: false,
-                sameSite: "lax",     // or "none" for cross-site, see note below
+                httpOnly: true,
+                secure: true,
+                sameSite: "none",
                 path: "/",
-                maxAge: 24 * 60 * 60 * 1000 // 1 day
+                maxAge: 24 * 60 * 60 * 1000
             };
             res.cookie("Token", userToken, option);
             return {
@@ -200,13 +200,13 @@ export const loginServices = async (req, res) => {
 export const logoutServices = (req, res) => {
     try {
         const option = {
-                httpOnly: false,  // JS can read
-                secure: false,
-                sameSite: "lax",     // or "none" for cross-site, see note below
-                path: "/",
-                maxAge: 0 // 1 day
-            };
-            res.cookie("Token", "", option);
+            httpOnly: true,
+            secure: true,
+            sameSite: "none",
+            path: "/",
+            maxAge: 0
+        };
+        res.cookie("Token", "", option);
 
         return {
             status: "success",
@@ -262,7 +262,7 @@ export const userTicketServices = async (req, res) => {
                             email: 1
                         },
                         eventDetails: {
-                            image:1,
+                            image: 1,
                             event_title: 1,
                             city: 1,
                             venue: 1,
