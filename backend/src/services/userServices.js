@@ -166,7 +166,7 @@ export const loginServices = async (req, res) => {
                 secure: true,
                 sameSite: "none",
                 path: "/",
-                maxAge: 24 * 60 * 60 * 1000
+                maxAge: 24 * 60 * 60 * 1000,
             };
             res.cookie("Token", userToken, option);
             return {
