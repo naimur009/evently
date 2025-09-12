@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://localhost:8080",
+  baseURL: "https://evently-backend-0m94.onrender.com",
   withCredentials: true, // if you need cookies/session
 });
 
