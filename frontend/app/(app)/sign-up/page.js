@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import api from "@/app/libs/axios";
 
 const inputBaseClasses =
   "w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-xl text-sm placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all duration-200 peer";
@@ -37,8 +38,8 @@ const SignupPage = () => {
       return;
     }
 
-    const response = await axios.post(
-      'http://localhost:8080/signup',
+    const response = await api.post(
+      '/signup',
       {
         username, email, password
       },

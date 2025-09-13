@@ -15,7 +15,7 @@ const Page = () => {
 
   useEffect(() => {
     const fetchTickets = async () => {
-      try {
+      try {        
         const res = await api.get("/myticket");
         setEvents(res.data.data);
         setDataFetch(true);

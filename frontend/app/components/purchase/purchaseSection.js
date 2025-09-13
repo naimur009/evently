@@ -39,7 +39,8 @@ const TicketPurchaseSection = ({ event }) => {
     }
 
     setLoading(true);
-
+    console.log("Initiating purchase...");
+    
     try {
       const response = await purchaseFunction(event.event_id, couponStatus == "valid", couponCode);
       console.log(response);

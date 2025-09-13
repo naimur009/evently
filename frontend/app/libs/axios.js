@@ -1,8 +1,9 @@
 import axios from "axios";
 
+
 const api = axios.create({
-  baseURL: "https://evently-backend-0m94.onrender.com",
-  withCredentials: true, // if you need cookies/session
+  baseURL: process.env.NEXT_PUBLIC_BACKEND_URL, // backend URL from .env.local
+  withCredentials: true, // send cookies/session
 });
 
 export default api;

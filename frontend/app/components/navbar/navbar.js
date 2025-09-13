@@ -6,7 +6,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import { decode } from "@/app/libs/decodeToken";
-import { CircleUser, CircleUserRound } from "lucide-react";
+import { CircleUser } from "lucide-react";
 import api from "@/app/libs/axios";
 
 export default function Navbar() {
@@ -25,12 +25,13 @@ export default function Navbar() {
     setMounted(true);
 
     const token = Cookies.get("Token");
+
     if (!token) {
       setRole(null);
       return;
     }
 
-    try { 
+    try {
       const decodedRole = decode(token)?.role || null;
       setRole(decodedRole);
     } catch {

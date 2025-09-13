@@ -3,6 +3,7 @@ import { decodeToken } from "../utils/tokenHelper.js";
 export const authVerification = (req, res, next) => {
     const token = req.cookies.Token;
     const decode = decodeToken(token);
+
     
     if (!decode) {
         return res.status(401).json({

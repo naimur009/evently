@@ -1,10 +1,11 @@
-import axios from "axios"
+
+import api from "./axios"
 
 export const purchaseFunction = async (eventID, coupon_apply, coupon_code) => {
 
   try {
-    const response = await axios.post(
-      "http://localhost:8080/ticket/purchase",
+    const response = await api.post(
+      "/ticket/purchase",
       {
         eventID, coupon_apply, coupon_code
       },

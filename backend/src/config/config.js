@@ -1,32 +1,38 @@
+import dotenv from 'dotenv';
+dotenv.config();
 
 const config = {
 
-    PORT : process.env.PORT || 8080,
-    MONGO_URI :"mongodb+srv://naimurrahaman955:naimur123456@database.xzeijuo.mongodb.net/evently",
+    PORT: process.env.PORT || 8080,
+    MONGO_URI: process.env.MONGO_URI,
 
-    JSON_LIMIT : "5mb",
 
-    URL_ENCODED : true,
-    URL_LIMIT: "5mb",
+    FRONTEND_URL: process.env.FRONTEND_URL || "http://localhost:3000",
 
-    RATE_LIMIT: 15*60*1000,
-    RATE_LIMIT_MAX: 1000000,
+    JSON_LIMIT: process.env.JSON_LIMIT || "5mb",
+
+    URL_ENCODED: process.env.URL_ENCODED || true,
+    URL_LIMIT: process.env.URL_LIMIT || "5mb",
+
+    RATE_LIMIT: process.env.RATE_LIMIT || 15 * 60 * 1000,
+    RATE_LIMIT_MAX: process.env.RATE_LIMIT_MAX || 1000000,
 
     // email service
-    SMTP_HOST: "smtp-relay.brevo.com",
-    SMTP_PORT: 587,
-    USER: "955e3b001@smtp-brevo.com",
-    PASS: "gNa142XBZqvbShHs",
-    EMAIL_FROM: "naimurrahaman955@gmail.com",
+    SMTP_HOST: process.env.SMTP_HOST,
+    SMTP_PORT: Number(process.env.SMTP_PORT),
+    USER: process.env.SMTP_USER,
+    PASS: process.env.SMTP_PASS,
+    EMAIL_FROM: process.env.EMAIL_FROM,
 
-    // jwy
-    JWT_KEY:"naimur@518529@.",
-    JWT_EXPIRED: 30*60*1000,
+
+    // jwt
+    JWT_KEY: process.env.JWT_KEY,
+    JWT_EXPIRED: process.env.JWT_EXPIRED,
 
 
     // payment info
-    STORE_ID:"ostad68a9602d4f14a",
-    STORE_PASS:"ostad68a9602d4f14a@ssl"
+    STORE_ID: process.env.STORE_ID,
+    STORE_PASS: process.env.STORE_PASS
 
 }
 

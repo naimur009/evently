@@ -13,8 +13,8 @@ export const signUpServices = async (req, res) => {
 
         const emailText = `Your verification code is ${verification_code}`;
         const emailSub = "e-ticket verification";
-
-        await emailSender(userData.email, emailSub, emailText);
+        
+        const res = await emailSender(userData.email, emailSub, emailText);
 
 
         // check if verified user exists
@@ -138,6 +138,7 @@ export const loginServices = async (req, res) => {
                 email: email
             }
         )
+        
         if (!user) {
             if (!user) {
                 return {
@@ -157,17 +158,19 @@ export const loginServices = async (req, res) => {
         }
 
         const password_match = await decodePassword(password, user.password);
+        
 
         if (password_match) {
             const userToken = encodeToken(user.email, user._id, user.role);
 
             const option = {
-                httpOnly: true,
+                httpOnly: false,
                 secure: false,
                 sameSite: "lax",   // not "none"
                 path: "/",
                 maxAge: 24 * 60 * 60 * 1000
             };
+
             res.cookie("Token", userToken, option);
             return {
                 status: "success",

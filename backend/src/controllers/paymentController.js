@@ -9,7 +9,7 @@ export const paymentController = async(req, res) =>{
 export const paymentSuccessController = async(req, res) =>{
     const result = await paymentSuccessService(req, res);
     if(result.status == "success"){
-        res.redirect("http://localhost:3001/payment-success");
+        res.redirect(`${process.env.FRONTEND_URL}/payment-success`);
         return
     }
     return res.status(200).json(result);
@@ -19,7 +19,7 @@ export const paymentSuccessController = async(req, res) =>{
 export const paymentFailedController = async(req, res) =>{
     const result = await paymentFailedService(req, res);
     if(result.status == "success"){
-        res.redirect("http://localhost:3001/payment-error");
+        res.redirect(`${process.env.FRONTEND_URL}/payment-error`);
         return
     }
     return res.status(200).json(result);
@@ -28,7 +28,7 @@ export const paymentFailedController = async(req, res) =>{
 export const paymentCancelController = async(req, res) =>{
     const result = await paymentCancelService(req, res);
     if(result.status == "success"){
-        res.redirect("http://localhost:3001/payment-cancel");
+        res.redirect(`${process.env.FRONTEND_URL}/payment-cancel`);
         return
     }
     return res.status(200).json(result);

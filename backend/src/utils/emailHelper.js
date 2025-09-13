@@ -6,21 +6,25 @@ export const emailSender = async (emailto, emailSub, emailText)=>{
 
     const transporter = nodemailer.createTransport({
         host: config.SMTP_HOST,
-        port: config.SMTP_PORT,
-        secure:false,
+        port: config.SMTP_PORT, // now a number
         auth:{
             user:config.USER,
             pass:config.PASS
         }
     })
-
+    
     const mailOptions = {
         from: config.EMAIL_FROM,
         to: emailto,
         subject: emailSub,
         text:emailText
     }
-    
-    return await transporter.sendMail(mailOptions);
 
+    try {
+        await transporter.sendMail(mailOptions);
+        return true;
+    } catch (error) {
+        console.error("Email send error:", error);
+        return false;
+    }
 }

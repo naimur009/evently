@@ -100,7 +100,7 @@ const CouponList = ({id, coupon}) => {
     };
 
     return (
-        <div className="w-full max-w-2xl mx-auto p-4 sm:p-6 bg-white rounded-2xl">
+        <div className="w-full max-w-2xl mx-auto p-4 sm:p-6 bg-white rounded-2xl border border-gray-200 shadow-sm">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
                 <h2 className="text-xl sm:text-2xl font-bold text-gray-800">🎟 Coupons</h2>
                 <button

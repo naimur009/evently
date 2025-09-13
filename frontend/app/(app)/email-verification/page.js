@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter, useSearchParams } from "next/navigation";
 import axios from "axios";
+import api from "@/app/libs/axios";
 
 const EmailVerificationPage = () => {
 
@@ -25,8 +26,8 @@ const EmailVerificationPage = () => {
     setMessage("");
     setShake(false);
 
-    const response = await axios.get(
-      `http://localhost:8080/verifyuser/${email}/${verificationCode}`,
+    const response = await api.get(
+      `/verifyuser/${email}/${verificationCode}`,
     )
 
     if (response.data.status === "success") {

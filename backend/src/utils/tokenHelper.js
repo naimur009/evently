@@ -5,6 +5,7 @@ import config from "../config/config.js";
 // encode jwt 
 export const encodeToken = (email, user_id, role)=>{
     const key = config.JWT_KEY;
+    
     const expire = {
         expiresIn: config.JWT_EXPIRED
     };

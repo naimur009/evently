@@ -16,10 +16,12 @@ const app = express();
 
 // security middleware
 app.use(cookieParser());
+
 app.use(cors({
-  origin: "http://localhost:3001", // frontend URL
+  origin: config.FRONTEND_URL, // frontend URL
   credentials: true                // allow cookies to be sent
 }));
+
 app.use(helmet());
 app.use(hpp());
 
@@ -36,10 +38,8 @@ app.use(rateLimit({windowMs:config.RATE_LIMIT, max:config.RATE_LIMIT_MAX}));
 // cacheing
 app.disable('etag')
 
-
 // api routes
 app.use('/', router);
-
 // connect to database
 mongoose
     .connect(config.MONGO_URI)
