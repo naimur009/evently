@@ -25,19 +25,13 @@ const CreateEventPage = ({ params }) => {
                 const { eventID } = await params;
                 const response = await api.get(`/events/${eventID}`);
                 setFormData(response.data.data[0]);
-
             } catch (error) {
                 console.log(error.message);
-
             }
         }
         fetchData();
 
     }, [params])
-
-    // console.log(formData.category.categoryName);
-
-
 
     const [errors, setErrors] = useState({});
 
@@ -71,6 +65,9 @@ const CreateEventPage = ({ params }) => {
         if (!formData.deadline) newErrors.deadline = "Deadline is required.";
         if (new Date(formData.deadline) <= new Date())
             newErrors.deadline = "Deadline must be in the future.";
+        if(formData.ticket_limit < formData.ticket_sold){
+            newErrors.ticket_limit = "Ticket limit cannot be less than tickets sold.";
+        }
 
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
@@ -94,9 +91,7 @@ const CreateEventPage = ({ params }) => {
                     deadline: formData.deadline,
                     time: formData.time,
                 }
-            )
-            console.log(response);
-            
+            )          
 
         } catch (error) {
 
