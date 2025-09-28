@@ -4,6 +4,10 @@ import api from "@/app/libs/axios";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
+// Tell Vercel this is a dynamic route
+export const dynamic = 'force-dynamic';
+export const dynamicParams = true;
+
 const EventPage = ({ params }) => {
   const router = useRouter();
   const [event, setEvent] = useState(null);
