@@ -18,13 +18,28 @@ api.interceptors.request.use(
   }
 );
 
-// Add response interceptor for error handling
+// Add response interceptor for error handling and token management
 api.interceptors.response.use(
   (response) => {
     return response;
   },
-  (error) => {
+  async (error) => {
     console.error('API Response Error:', error.response?.status, error.response?.data);
+    
+    // Handle 401 Unauthorized errors (token expired/invalid)
+    if (error.response?.status === 401) {
+      // Clear invalid tokens
+      if (typeof window !== 'undefined') {
+        const { tokenManager } = await import('./tokenManager');
+        tokenManager.removeToken();
+        
+        // If we're not already on login page, redirect there
+        if (!window.location.pathname.includes('/log-in')) {
+          window.location.href = '/log-in';
+        }
+      }
+    }
+    
     return Promise.reject(error);
   }
 );

@@ -23,25 +23,43 @@ const LoginPage = () => {
     setMessage("");
     setShake(false);
 
-    const response = await api.post(
-      '/login',
-      { email, password },
-      {
-        headers: {
-          'Content-Type': 'application/json',
+    try {
+      const response = await api.post(
+        '/login',
+        { email, password },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          }
         }
+      );    
+
+      if (response.data.status === "success") {
+        // Import tokenManager dynamically to avoid SSR issues
+        const { tokenManager } = await import('@/app/libs/tokenManager');
+        
+        // Set token in both cookie and localStorage
+        if (response.data.token) {
+          tokenManager.setToken(response.data.token);
+        }
+        
+        // Small delay to ensure token is set before navigation
+        setTimeout(() => {
+          router.push('/');
+          window.location.reload(); // Force refresh to update auth state
+        }, 100);
+        return;
       }
-    );    
 
-    if (response.data.status === "success") {
-      router.push('/');
-      return;
+      setMessage(response.data.message || "Invalid credentials. Please try again.");
+      setShake(true);
+    } catch (error) {
+      console.error('Login error:', error);
+      setMessage(error.response?.data?.message || "Login failed. Please try again.");
+      setShake(true);
+    } finally {
+      setIsSubmitting(false);
     }
-
-    setMessage("Invalid credentials. Please try again.");
-    setShake(true);
-    setIsSubmitting(false);
-    return;
   };
 
   useEffect(() => {

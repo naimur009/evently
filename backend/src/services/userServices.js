@@ -163,12 +163,15 @@ export const loginServices = async (req, res) => {
         if (password_match) {
             const userToken = encodeToken(user.email, user._id, user.role);
 
+            // Set cookie options based on environment
+            const isProduction = process.env.NODE_ENV === 'production';
             const option = {
-                httpOnly: false,
-                secure: false,
-                sameSite: "lax",   // not "none"
+                httpOnly: false, // Allow JS access for frontend token management
+                secure: isProduction, // Secure in production (HTTPS)
+                sameSite: isProduction ? "none" : "lax", // Cross-site in production
                 path: "/",
-                maxAge: 24 * 60 * 60 * 1000
+                maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+                domain: isProduction ? undefined : undefined // Let browser set domain
             };
 
             res.cookie("Token", userToken, option);
@@ -202,18 +205,26 @@ export const loginServices = async (req, res) => {
 
 export const logoutServices = (req, res) => {
     try {
+        // Clear cookie with same settings as when it was set
+        const isProduction = process.env.NODE_ENV === 'production';
         const option = {
-            httpOnly: true,
-            secure: false,
-            sameSite: "lax",   // not "none"
+            httpOnly: false,
+            secure: isProduction,
+            sameSite: isProduction ? "none" : "lax",
             path: "/",
-            maxAge: 0
+            maxAge: 0 // Expire immediately
         };
+        
+        // Clear the cookie
         res.cookie("Token", "", option);
+        
+        // Also try to clear with different variations to ensure cleanup
+        res.clearCookie("Token", { path: "/" });
+        res.clearCookie("Token", { path: "/", domain: req.get('host') });
 
         return {
             status: "success",
-            message: "logout successfull"
+            message: "Logout successful"
         }
     } catch (error) {
         return {

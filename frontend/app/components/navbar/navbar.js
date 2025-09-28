@@ -24,19 +24,37 @@ export default function Navbar() {
   useEffect(() => {
     setMounted(true);
 
-    const token = Cookies.get("Token");
+    const checkAuthState = async () => {
+      try {
+        // Try multiple token sources
+        let token = Cookies.get("Token");
+        
+        if (!token && typeof window !== 'undefined') {
+          // Fallback to localStorage
+          token = localStorage.getItem('token');
+        }
 
-    if (!token) {
-      setRole(null);
-      return;
-    }
+        if (!token) {
+          setRole(null);
+          return;
+        }
 
-    try {
-      const decodedRole = decode(token)?.role || null;
-      setRole(decodedRole);
-    } catch {
-      setRole(null);
-    }
+        // Validate token format and expiration
+        const { tokenManager } = await import('@/app/libs/tokenManager');
+        if (!tokenManager.hasValidToken()) {
+          setRole(null);
+          return;
+        }
+
+        const decodedRole = decode(token)?.role || null;
+        setRole(decodedRole);
+      } catch (error) {
+        console.error('Auth state check error:', error);
+        setRole(null);
+      }
+    };
+
+    checkAuthState();
   }, [pathname]);
 
 
@@ -60,14 +78,41 @@ export default function Navbar() {
   // Logout Handler
   const handleLogout = useCallback(async () => {
     try {
+      // Call backend logout first
       const response = await api.post("/logout");
 
       if (response.data.status === "success") {
+        // Clear tokens from frontend
+        const { tokenManager } = await import('@/app/libs/tokenManager');
+        tokenManager.removeToken();
+        
+        // Also clear using old method for compatibility
+        if (typeof window !== 'undefined') {
+          document.cookie = 'Token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT; SameSite=Lax';
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+        }
+        
         setRole(null);
-        router.push("/");
+        
+        // Force page refresh to clear all auth state
+        window.location.href = '/';
+        return;
       }
     } catch (err) {
       console.error("Logout failed:", err);
+      
+      // Even if backend logout fails, clear frontend tokens
+      const { tokenManager } = await import('@/app/libs/tokenManager');
+      tokenManager.removeToken();
+      
+      if (typeof window !== 'undefined') {
+        document.cookie = 'Token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT; SameSite=Lax';
+        localStorage.removeItem('token');
+      }
+      
+      setRole(null);
+      window.location.href = '/';
     } finally {
       setIsProfileMenuOpen(false);
       setIsMobileMenuOpen(false);
