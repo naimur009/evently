@@ -1,26 +1,36 @@
+"use client"
 import api from "@/app/libs/axios";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
+const FeaturedEventsListSection = () => {
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-// api call for fetching data
-const getEvents = async ()=> {
-  try {
-    const response = await api.get("/events");
-    const events = response.data.data;
-    return events.slice(0, 9);
-  } catch (error) {
-    console.error("Error fetching events:", error);
-    return [];
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await api.get("/events");
+        const events = response.data.data;
+        setEvents(events.slice(0, 9));
+      } catch (error) {
+        console.error("Error fetching events:", error);
+        setEvents([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEvents();
+  }, []);
+
+  if (loading) {
+    return <p className="text-center text-gray-600 mt-10">Loading events...</p>;
   }
-}
-
-const FeaturedEventsListSection = async () => {
-
-  const events = await getEvents();
 
   if (!events || !Array.isArray(events) || events.length === 0) {
-    return <p className="text-center text-gray-600 mt-10">Loading events...</p>;
+    return <p className="text-center text-gray-600 mt-10">No events available.</p>;
   }
 
 

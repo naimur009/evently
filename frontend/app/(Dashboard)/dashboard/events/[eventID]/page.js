@@ -29,7 +29,7 @@ const Page = ({ params }) => {
         );
     }
     else {
-        <div>Loading........</div>
+        return <div>Loading........</div>
     }
 };
 

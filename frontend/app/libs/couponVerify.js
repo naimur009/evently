@@ -1,9 +1,9 @@
-import axios from "axios"
+import api from "./axios"
 
 
 export const isValidCoupon = async (couponCode, eventID) => {
     try {
-        const response = await axios.get(`http://localhost:8080/coupon/${couponCode}/${eventID}`)
+        const response = await api.get(`/coupon/${couponCode}/${eventID}`)
         
         if (response.data.status == "success") {
             return {

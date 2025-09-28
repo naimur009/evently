@@ -17,8 +17,7 @@ const fetchGlobalEvents = async () => {
   }
 };
 
-// Immediately fetch events
-fetchGlobalEvents();
+// Remove immediate fetch - will be called in useEffect
 
 
 const fetchEvents = (filters) => {
