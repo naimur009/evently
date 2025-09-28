@@ -5,8 +5,9 @@ import { decode } from './app/libs/decodeToken';
 export function middleware(request) {
 
     const path = request.nextUrl.pathname;
+    console.log('Middleware processing path:', path);
 
-    const publicPath = path === "/log-in" || path === "/sign-up" || path === "email-verification";
+    const publicPath = path === "/log-in" || path === "/sign-up" || path === "/email-verification";
     const token = request.cookies.get('Token')?.value || '';
 
     if (publicPath && token) {
@@ -27,10 +28,15 @@ export function middleware(request) {
             return NextResponse.redirect(new URL('/log-in', request.url))
         }
 
-        const tokenDecode = decode(token);
-        
-        if (tokenDecode && tokenDecode.role !== "admin") {
-            return NextResponse.redirect(new URL('/', request.url))
+        try {
+            const tokenDecode = decode(token);
+            
+            if (tokenDecode && tokenDecode.role !== "admin") {
+                return NextResponse.redirect(new URL('/', request.url))
+            }
+        } catch (error) {
+            console.error('Token decode error:', error);
+            return NextResponse.redirect(new URL('/log-in', request.url))
         }
     }
     return NextResponse.next();
@@ -41,7 +47,7 @@ export function middleware(request) {
 export const config = {
     matcher: [
         "/my-tickets",
-        "/log-in",
+        "/log-in", 
         "/sign-up",
         "/email-verification",
         "/dashboard",
