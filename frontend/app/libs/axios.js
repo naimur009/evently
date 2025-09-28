@@ -5,6 +5,7 @@ const api = axios.create({
   withCredentials: true, // send cookies/session
   timeout: 10000, // 10 second timeout
 });
+console.log(process.env.NEXT_PUBLIC_BACKEND_URL);
 
 // Add request interceptor for debugging
 api.interceptors.request.use(
