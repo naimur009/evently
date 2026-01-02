@@ -1,72 +1,94 @@
+"use client";
 
-import Link from 'next/link'; // Import Link from Next.js
+import Link from 'next/link';
 import { Music, Mic, Film, Trophy } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const CategorySection = () => {
   const categories = [
     {
       name: "Music",
       desc: "Concerts and live shows.",
-      color: "from-blue-400 to-indigo-500",
+      color: "bg-blue-100 text-blue-600",
+      hoverColor: "group-hover:bg-blue-600 group-hover:text-white",
       icon: <Music className="w-8 h-8" />,
     },
     {
       name: "Sports",
       desc: "Games and tournaments.",
-      color: "from-red-400 to-rose-500",
+      color: "bg-red-100 text-red-600",
+      hoverColor: "group-hover:bg-red-600 group-hover:text-white",
       icon: <Trophy className="w-8 h-8" />,
     },
     {
       name: "Comedy",
       desc: "Stand-up and shows.",
-      color: "from-yellow-400 to-orange-500",
+      color: "bg-yellow-100 text-yellow-600",
+      hoverColor: "group-hover:bg-yellow-600 group-hover:text-white",
       icon: <Mic className="w-8 h-8" />,
     },
     {
       name: "Theater",
       desc: "Plays and musicals.",
-      color: "from-green-400 to-emerald-500",
+      color: "bg-green-100 text-green-600",
+      hoverColor: "group-hover:bg-green-600 group-hover:text-white",
       icon: <Film className="w-8 h-8" />,
     },
   ];
 
+  const container = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const item = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0 }
+  };
+
   return (
-    <div className="relative bg-gradient-to-br from-gray-50 to-gray-100 py-24 px-6 lg:px-8 overflow-hidden">
-      <div className="max-w-6xl mx-auto relative z-10">
+    <div className="relative py-24 px-6 lg:px-8 bg-white overflow-hidden">
+      <div className="max-w-7xl mx-auto relative z-10">
         <div className="text-center mb-16">
-          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-gray-900">
+          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-gray-900 mb-4">
             Explore by Category
           </h2>
-          <p className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             Discover experiences tailored to your interests and passions.
           </p>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <motion.div
+          variants={container}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: "-100px" }}
+          className="grid grid-cols-2 md:grid-cols-4 gap-6"
+        >
           {categories.map((cat) => (
-            <Link
-              key={cat.name}
-              href="/all-events" // Redirect to events page with category as query
-              className="group relative rounded-2xl bg-white border border-gray-200 transition-all duration-300 hover:-translate-y-2 hover:shadow-lg hover:shadow-gray-300/50"
-            >
-              <div className="p-8 flex flex-col items-center text-center relative z-10">
+            <motion.div key={cat.name} variants={item}>
+              <Link
+                href="/all-events"
+                className="group relative flex flex-col items-center p-8 rounded-3xl bg-gray-50 border border-transparent hover:border-gray-100 hover:shadow-xl hover:-translate-y-2 transition-all duration-300"
+              >
                 <div
-                  className={`mb-5 p-4 rounded-full bg-gradient-to-r ${cat.color} text-white shadow-md transition-transform duration-300 group-hover:scale-105`}
+                  className={`mb-6 p-5 rounded-2xl ${cat.color} ${cat.hoverColor} transition-colors duration-300 shadow-sm`}
                 >
                   {cat.icon}
                 </div>
-                <h3 className="text-lg font-semibold text-gray-800 mb-2 group-hover:text-blue-600 transition-colors">
+                <h3 className="text-xl font-bold text-gray-900 mb-2">
                   {cat.name}
                 </h3>
-                <p className="text-sm text-gray-600">{cat.desc}</p>
-              </div>
-
-              <div
-                className={`absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-40 bg-gradient-to-r ${cat.color} blur-xl transition duration-500`}
-              />
-            </Link>
+                <p className="text-sm text-center text-gray-500">{cat.desc}</p>
+              </Link>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </div>
   );
