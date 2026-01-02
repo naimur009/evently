@@ -98,7 +98,7 @@ export default function Navbar() {
       setIsMobileMenuOpen(false);
       window.location.href = '/';
     }
-  }, [router]);
+  }, []);
 
   const navLinks = {
     user: [
@@ -130,8 +130,8 @@ export default function Navbar() {
       animate={{ y: 0 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
       className={`fixed top-0 left-0 w-full z-[100] transition-all duration-500 ${scrolled
-          ? "bg-white/95 backdrop-blur-xl shadow-lg border-b border-gray-100/50 py-3"
-          : "bg-transparent py-4"
+        ? "bg-white/95 backdrop-blur-xl shadow-lg border-b border-gray-100/50 py-3"
+        : "bg-transparent py-4"
         }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -193,8 +193,8 @@ export default function Navbar() {
                 <Link
                   href="/log-in"
                   className={`px-5 py-2.5 rounded-xl font-semibold text-sm transition-all duration-300 ${scrolled || !isEventDetails
-                      ? "text-gray-700 hover:bg-gray-100"
-                      : "text-white hover:bg-white/10"
+                    ? "text-gray-700 hover:bg-gray-100"
+                    : "text-white hover:bg-white/10"
                     }`}
                 >
                   Log In
@@ -214,8 +214,8 @@ export default function Navbar() {
                 <button
                   onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
                   className={`w-11 h-11 rounded-xl flex items-center justify-center transition-all duration-300 ${scrolled || !isEventDetails
-                      ? "bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100 text-blue-600 hover:from-blue-100 hover:to-indigo-100"
-                      : "bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white/30"
+                    ? "bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100 text-blue-600 hover:from-blue-100 hover:to-indigo-100"
+                    : "bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white/30"
                     } focus:outline-none focus:ring-2 focus:ring-blue-500/30 hover:scale-105 transform`}
                 >
                   <CircleUser className="w-6 h-6" />
@@ -264,8 +264,8 @@ export default function Navbar() {
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className={`p-2.5 rounded-xl transition-all duration-300 ${scrolled || !isEventDetails
-                  ? "text-gray-700 hover:bg-gray-100"
-                  : "text-white hover:bg-white/10"
+                ? "text-gray-700 hover:bg-gray-100"
+                : "text-white hover:bg-white/10"
                 }`}
               aria-label="Toggle Menu"
             >
@@ -315,8 +315,8 @@ export default function Navbar() {
                     key={name}
                     href={href}
                     className={`block font-semibold py-3.5 px-4 rounded-xl transition-all duration-200 ${isActive
-                        ? "text-blue-600 bg-gradient-to-r from-blue-50 to-indigo-50 shadow-sm"
-                        : "text-gray-700 hover:bg-gray-50 hover:text-blue-600"
+                      ? "text-blue-600 bg-gradient-to-r from-blue-50 to-indigo-50 shadow-sm"
+                      : "text-gray-700 hover:bg-gray-50 hover:text-blue-600"
                       }`}
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
