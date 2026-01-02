@@ -221,7 +221,7 @@ const EventsPage = ({ events }) => {
                                     <Search className="w-10 h-10 text-gray-400" />
                                 </div>
                                 <p className="text-2xl font-bold text-gray-900 mb-2">No events found</p>
-                                <p className="text-gray-500">Try adjusting your search filters to find what you're looking for.</p>
+                                <p className="text-gray-500">Try adjusting your search filters to find what you&apos;re looking for.</p>
                             </div>
                         )}
                     </motion.div>
@@ -248,8 +248,8 @@ const EventsPage = ({ events }) => {
                                 key={i}
                                 onClick={() => setCurrentPage(i + 1)}
                                 className={`w-10 h-10 rounded-xl font-bold transition-all border ${currentPage === i + 1
-                                        ? "bg-blue-600 text-white border-blue-600 shadow-lg shadow-blue-500/30 scale-110"
-                                        : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50 hover:text-gray-900"
+                                    ? "bg-blue-600 text-white border-blue-600 shadow-lg shadow-blue-500/30 scale-110"
+                                    : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50 hover:text-gray-900"
                                     }`}
                             >
                                 {i + 1}

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Home, BarChart2, LogOut, Menu, ArrowLeftToLine, CalendarDays, BadgePlus, User } from "lucide-react";
 import { motion } from "framer-motion";
 import { usePathname } from "next/navigation";
@@ -37,14 +37,14 @@ const Sidebar = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const menuItems = [
+  const menuItems = useMemo(() => [
     { name: "Home Page", icon: <Home size={20} />, link: "/" },
     { name: "Overview", icon: <BarChart2 size={20} />, link: "/dashboard" },
     { name: "All Events", icon: <CalendarDays size={20} />, link: "/dashboard/events" },
     { name: "Create New Event", icon: <BadgePlus size={20} />, link: "/dashboard/create-event" },
     ...(role === "admin" ? [{ name: "Users", icon: <User size={20} />, link: "/dashboard/users/" }] : []),
     { name: "Logout", icon: <LogOut size={20} />, link: "/dashboard/logout" },
-  ];
+  ], [role]);
 
   // Update active state based on current pathname
   useEffect(() => {
@@ -52,7 +52,7 @@ const Sidebar = () => {
     if (currentItem) {
       setActive(currentItem.name);
     }
-  }, [pathname, role]); // Trigger when role is loaded too
+  }, [pathname, menuItems]); // Added menuItems as dependency
 
   return (
     <div>
