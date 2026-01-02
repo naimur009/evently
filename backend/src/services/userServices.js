@@ -13,7 +13,7 @@ export const signUpServices = async (req, res) => {
 
         const emailText = `Your verification code is ${verification_code}`;
         const emailSub = "e-ticket verification";
-        
+
         const res = await emailSender(userData.email, emailSub, emailText);
 
 
@@ -138,7 +138,7 @@ export const loginServices = async (req, res) => {
                 email: email
             }
         )
-        
+
         if (!user) {
             if (!user) {
                 return {
@@ -158,7 +158,7 @@ export const loginServices = async (req, res) => {
         }
 
         const password_match = await decodePassword(password, user.password);
-        
+
 
         if (password_match) {
             const userToken = encodeToken(user.email, user._id, user.role);
@@ -181,7 +181,7 @@ export const loginServices = async (req, res) => {
                 token: userToken,
                 data: {
                     email: user.email,
-                    username: user.username,
+                    username: user.name,
                     role: user.role
                 }
             };
@@ -214,10 +214,10 @@ export const logoutServices = (req, res) => {
             path: "/",
             maxAge: 0 // Expire immediately
         };
-        
+
         // Clear the cookie
         res.cookie("Token", "", option);
-        
+
         // Also try to clear with different variations to ensure cleanup
         res.clearCookie("Token", { path: "/" });
         res.clearCookie("Token", { path: "/", domain: req.get('host') });

@@ -1,72 +1,69 @@
 "use client";
 
-import { useEffect, useState, useRef, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
+import { Menu, X, Rocket, User, LogOut, ChevronDown } from "lucide-react";
 import Cookies from "js-cookie";
-import { decode } from "@/app/libs/decodeToken";
-import { CircleUser, Menu, X, LogOut, User } from "lucide-react";
 import api from "@/app/libs/axios";
 
-export default function Navbar() {
+const Navbar = () => {
+  const [role, setRole] = useState(null);
+  const [scrolled, setScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
+  const [username, setUsername] = useState("");
+  const [mounted, setMounted] = useState(false);
+
+  const profileRef = useRef(null);
   const pathname = usePathname();
   const router = useRouter();
 
-  const [role, setRole] = useState(null);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-  const profileRef = useRef(null);
-
-  // Handle scroll effect
+  // Authentication & Role Check
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
+    const checkAuth = async () => {
+      setMounted(true);
+      const { tokenManager } = await import('@/app/libs/tokenManager');
+
+      const token = tokenManager.getToken();
+      let user = localStorage.getItem("user");
+      let parsedUser = null;
+
+      if (user) {
+        try {
+          parsedUser = JSON.parse(user);
+        } catch (e) {
+          console.error("Error parsing user from localStorage:", e);
+        }
+      }
+
+      // Fallback: If no user object but token exists, decode token
+      if (!parsedUser && token) {
+        parsedUser = tokenManager.getUserInfo();
+        if (parsedUser) {
+          localStorage.setItem("user", JSON.stringify(parsedUser));
+        }
+      }
+
+      if (parsedUser) {
+        setRole(parsedUser.role || "user");
+        setUsername(parsedUser.username || parsedUser.name || "");
+      }
     };
+
+    checkAuth();
+  }, []);
+
+  // Scroll Effect
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Handle auth (role detection)
+  // Click Outside Profile Menu
   useEffect(() => {
-    setMounted(true);
-
-    const checkAuthState = async () => {
-      try {
-        let token = Cookies.get("Token");
-
-        if (!token && typeof window !== 'undefined') {
-          token = localStorage.getItem('token');
-        }
-
-        if (!token) {
-          setRole(null);
-          return;
-        }
-
-        const { tokenManager } = await import('@/app/libs/tokenManager');
-        if (!tokenManager.hasValidToken()) {
-          setRole(null);
-          return;
-        }
-
-        const decodedRole = decode(token)?.role || null;
-        setRole(decodedRole);
-      } catch (error) {
-        console.error('Auth state check error:', error);
-        setRole(null);
-      }
-    };
-
-    checkAuthState();
-  }, [pathname]);
-
-  // Close profile dropdown on outside click
-  useEffect(() => {
-    if (!isProfileMenuOpen) return;
-
     const handleClickOutside = (event) => {
       if (profileRef.current && !profileRef.current.contains(event.target)) {
         setIsProfileMenuOpen(false);
@@ -94,6 +91,7 @@ export default function Navbar() {
       }
 
       setRole(null);
+      setUsername("");
       setIsProfileMenuOpen(false);
       setIsMobileMenuOpen(false);
       window.location.href = '/';
@@ -107,10 +105,9 @@ export default function Navbar() {
       { name: "My Tickets", href: "/my-tickets" },
     ],
     admin: [
-      { name: "Home", href: "/" },
+      { name: "Dashboard", href: "/dashboard" },
       { name: "Events", href: "/all-events" },
       { name: "My Tickets", href: "/my-tickets" },
-      { name: "Dashboard", href: "/dashboard" },
     ],
     public: [
       { name: "Home", href: "/" },
@@ -122,104 +119,87 @@ export default function Navbar() {
 
   if (!mounted) return null;
 
-  const isEventDetails = pathname.startsWith("/all-events/") && pathname.length > "/all-events".length;
-
   return (
     <motion.nav
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
-      className={`fixed top-0 left-0 w-full z-[100] transition-all duration-500 ${scrolled
-        ? "bg-white/95 backdrop-blur-xl shadow-lg border-b border-gray-100/50 py-3"
-        : "bg-transparent py-4"
+      className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ease-in-out ${scrolled
+        ? "bg-white/90 backdrop-blur-xl border-b border-gray-100 py-3 shadow-sm"
+        : "bg-transparent py-5"
         }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center">
+
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-3 select-none group">
+          <Link href="/" className="flex items-center gap-2 group">
             <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg blur-sm opacity-50 group-hover:opacity-75 transition-opacity duration-300"></div>
-              <div className="relative bg-gradient-to-r from-blue-600 to-indigo-600 p-2 rounded-lg">
-                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-              </div>
+              <div className="absolute inset-0 bg-blue-500 blur-lg opacity-10 group-hover:opacity-20 transition-opacity duration-300 rounded-full"></div>
+              <Rocket className="w-8 h-8 text-blue-600 relative z-10 transform group-hover:-translate-y-1 group-hover:rotate-12 transition-transform duration-300" />
             </div>
-            <span className="text-2xl font-black bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent tracking-tight group-hover:scale-105 transition-transform duration-300">
+            <span className="text-2xl font-black text-gray-900 tracking-tight">
               Evently
             </span>
           </Link>
 
-          {/* Desktop Menu */}
-          <div className="hidden md:flex items-center gap-2">
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center gap-8">
             {linksToShow.map(({ name, href }) => {
               const isActive = pathname === href;
-
-              // Determine text color based on background (scrolled or dark hero)
-              const textColorClass = scrolled
-                ? (isActive ? "text-blue-600" : "text-gray-700 group-hover:text-blue-600")
-                : (isEventDetails ? (isActive ? "text-white font-bold" : "text-white/95 group-hover:text-white") : (isActive ? "text-blue-600" : "text-gray-700 group-hover:text-blue-600"));
-
               return (
                 <Link
                   key={name}
                   href={href}
-                  className={`relative group px-4 py-2 rounded-lg transition-all duration-300 ${isActive && scrolled ? "bg-blue-50" : ""
-                    }`}
+                  className="relative group py-2"
                 >
-                  <span className={`relative z-10 text-sm font-semibold transition-all duration-300 ${textColorClass}`}>
+                  <span className={`relative z-10 text-sm font-semibold transition-colors duration-300 ${isActive ? "text-blue-600" : "text-gray-600 group-hover:text-blue-600"
+                    }`}>
                     {name}
                   </span>
-                  {isActive && !scrolled && (
+                  {isActive && (
                     <motion.div
-                      layoutId="navbar-pill"
-                      className={`absolute inset-0 rounded-lg ${isEventDetails ? "bg-white/20" : "bg-blue-50"
-                        }`}
+                      layoutId="navbar-underline"
+                      className="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600"
                       transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                     />
-                  )}
-                  {!isActive && (
-                    <div className={`absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${(!scrolled && isEventDetails) ? "bg-white/10" : "bg-gray-100"
-                      }`} />
                   )}
                 </Link>
               );
             })}
+          </div>
 
-            {/* Guest (no role) */}
-            {!role && (
-              <div className="flex items-center gap-3 ml-4 pl-4 border-l border-gray-200/50">
-                <Link
-                  href="/log-in"
-                  className={`px-5 py-2.5 rounded-xl font-semibold text-sm transition-all duration-300 ${scrolled || !isEventDetails
-                    ? "text-gray-700 hover:bg-gray-100"
-                    : "text-white hover:bg-white/10"
-                    }`}
-                >
-                  Log In
+          {/* Actions (Login/Profile) */}
+          <div className="hidden md:flex items-center gap-4">
+            {!role ? (
+              <>
+                <Link href="/log-in">
+                  <button className="px-5 py-2 text-sm font-medium text-gray-600 transition-colors hover:text-blue-600 font-semibold">
+                    Log In
+                  </button>
                 </Link>
-                <Link
-                  href="/sign-up"
-                  className="px-6 py-2.5 rounded-xl font-bold text-white text-sm bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 transition-all duration-300 transform hover:scale-105 hover:-translate-y-0.5"
-                >
-                  Sign Up
+                <Link href="/sign-up">
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="px-6 py-2.5 text-sm font-bold text-white bg-blue-600 rounded-lg shadow-md hover:shadow-lg hover:bg-blue-700 transition-all"
+                  >
+                    Sign Up
+                  </motion.button>
                 </Link>
-              </div>
-            )}
-
-            {/* Authenticated */}
-            {role && (
-              <div className="relative ml-4 pl-4 border-l border-gray-200/50" ref={profileRef}>
-                <button
+              </>
+            ) : (
+              <div className="relative" ref={profileRef}>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
                   onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
-                  className={`w-11 h-11 rounded-xl flex items-center justify-center transition-all duration-300 ${scrolled || !isEventDetails
-                    ? "bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100 text-blue-600 hover:from-blue-100 hover:to-indigo-100"
-                    : "bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white/30"
-                    } focus:outline-none focus:ring-2 focus:ring-blue-500/30 hover:scale-105 transform`}
+                  className="flex items-center gap-3 px-4 py-2 rounded-full border border-gray-200 bg-gray-50 hover:bg-gray-100 transition-all duration-300"
                 >
-                  <CircleUser className="w-6 h-6" />
-                </button>
+                  <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center shadow-sm">
+                    <User className="w-4 h-4 text-white" />
+                  </div>
+                  <ChevronDown className={`w-4 h-4 text-gray-500 transition-transform duration-300 ${isProfileMenuOpen ? "rotate-180" : ""}`} />
+                </motion.button>
 
                 <AnimatePresence>
                   {isProfileMenuOpen && (
@@ -228,28 +208,33 @@ export default function Navbar() {
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 10, scale: 0.95 }}
                       transition={{ duration: 0.2 }}
-                      className="absolute right-0 mt-3 w-60 bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-100 overflow-hidden origin-top-right"
+                      className="absolute right-0 mt-3 w-56 rounded-xl bg-white border border-gray-100 shadow-xl overflow-hidden z-50"
                     >
-                      <div className="p-3">
-                        <Link
-                          href="/"
-                          onClick={() => setIsProfileMenuOpen(false)}
-                          className="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 hover:text-blue-600 transition-all duration-200 group"
-                        >
-                          <div className="p-2 rounded-lg bg-gray-100 group-hover:bg-blue-100 transition-colors duration-200">
-                            <User className="w-4 h-4" />
-                          </div>
-                          <span className="font-semibold text-sm">Profile</span>
-                        </Link>
-
+                      <div className="px-5 py-4 border-b border-gray-50 bg-gray-50/50">
+                        <p className="text-xs text-blue-600 font-bold uppercase tracking-wider mb-1">Signed in as</p>
+                        <p className="text-sm font-black text-gray-900 truncate max-w-[180px]">{username || role}</p>
+                        <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-0.5">{role}</p>
+                      </div>
+                      <div className="p-2 space-y-1">
+                        {linksToShow.map((link) => (
+                          <Link
+                            key={link.name}
+                            href={link.href}
+                            className="flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-gray-600 rounded-lg hover:bg-gray-50 hover:text-blue-600 transition-all"
+                            onClick={() => setIsProfileMenuOpen(false)}
+                          >
+                            {link.name === "Dashboard" && <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />}
+                            {link.name}
+                          </Link>
+                        ))}
+                      </div>
+                      <div className="p-2 border-t border-gray-50">
                         <button
                           onClick={handleLogout}
-                          className="flex items-center gap-3 w-full px-4 py-3 rounded-xl text-red-600 hover:bg-red-50 transition-all duration-200 mt-1 group"
+                          className="flex w-full items-center gap-3 px-3 py-2.5 text-sm font-medium text-red-600 rounded-lg hover:bg-red-50 hover:text-red-700 transition-all"
                         >
-                          <div className="p-2 rounded-lg bg-red-50 group-hover:bg-red-100 transition-colors duration-200">
-                            <LogOut className="w-4 h-4" />
-                          </div>
-                          <span className="font-semibold text-sm">Log Out</span>
+                          <LogOut className="w-4 h-4" />
+                          Sign Out
                         </button>
                       </div>
                     </motion.div>
@@ -263,35 +248,9 @@ export default function Navbar() {
           <div className="md:hidden">
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className={`p-2.5 rounded-xl transition-all duration-300 ${scrolled || !isEventDetails
-                ? "text-gray-700 hover:bg-gray-100"
-                : "text-white hover:bg-white/10"
-                }`}
-              aria-label="Toggle Menu"
+              className="p-2 text-gray-600 hover:text-blue-600 transition-colors"
             >
-              <AnimatePresence mode="wait">
-                {isMobileMenuOpen ? (
-                  <motion.div
-                    key="close"
-                    initial={{ rotate: -90, opacity: 0 }}
-                    animate={{ rotate: 0, opacity: 1 }}
-                    exit={{ rotate: 90, opacity: 0 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <X className="h-6 w-6" />
-                  </motion.div>
-                ) : (
-                  <motion.div
-                    key="menu"
-                    initial={{ rotate: 90, opacity: 0 }}
-                    animate={{ rotate: 0, opacity: 1 }}
-                    exit={{ rotate: -90, opacity: 0 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <Menu className="h-6 w-6" />
-                  </motion.div>
-                )}
-              </AnimatePresence>
+              {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
           </div>
         </div>
@@ -301,57 +260,44 @@ export default function Navbar() {
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="md:hidden overflow-hidden bg-white/95 backdrop-blur-xl border-t border-gray-100 shadow-2xl"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="md:hidden overflow-hidden bg-white border-t border-gray-100 shadow-xl"
           >
-            <div className="px-4 py-6 flex flex-col space-y-1">
-              {linksToShow.map(({ name, href }) => {
-                const isActive = pathname === href;
-                return (
-                  <Link
-                    key={name}
-                    href={href}
-                    className={`block font-semibold py-3.5 px-4 rounded-xl transition-all duration-200 ${isActive
-                      ? "text-blue-600 bg-gradient-to-r from-blue-50 to-indigo-50 shadow-sm"
-                      : "text-gray-700 hover:bg-gray-50 hover:text-blue-600"
-                      }`}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    {name}
+            <div className="px-4 py-6 space-y-4">
+              {linksToShow.map((link) => (
+                <Link
+                  key={link.name}
+                  href={link.href}
+                  className="block px-4 py-3 text-lg font-medium text-gray-600 hover:text-blue-600 hover:bg-gray-50 rounded-xl transition-all"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  {link.name}
+                </Link>
+              ))}
+              {!role && (
+                <div className="pt-4 flex flex-col gap-3">
+                  <Link href="/log-in" onClick={() => setIsMobileMenuOpen(false)}>
+                    <button className="w-full py-3 text-gray-600 border border-gray-200 rounded-xl font-semibold hover:bg-gray-50 transition-all">
+                      Log In
+                    </button>
                   </Link>
-                );
-              })}
-
-              {!role ? (
-                <div className="pt-4 mt-3 border-t border-gray-100 flex flex-col space-y-3">
-                  <Link
-                    href="/log-in"
-                    className="w-full py-3.5 rounded-xl border-2 border-gray-200 text-gray-700 font-bold text-center hover:bg-gray-50 hover:border-gray-300 transition-all duration-200"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    Log In
-                  </Link>
-                  <Link
-                    href="/sign-up"
-                    className="w-full py-3.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-center hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 shadow-lg shadow-blue-500/30"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    Sign Up
+                  <Link href="/sign-up" onClick={() => setIsMobileMenuOpen(false)}>
+                    <button className="w-full py-3 text-white bg-blue-600 rounded-xl font-bold shadow-md hover:bg-blue-700 transition-all">
+                      Sign Up
+                    </button>
                   </Link>
                 </div>
-              ) : (
-                <div className="pt-4 mt-3 border-t border-gray-100">
-                  <button
-                    onClick={handleLogout}
-                    className="w-full py-3.5 rounded-xl bg-red-50 text-red-600 font-bold hover:bg-red-100 transition-all duration-200 flex items-center justify-center gap-2"
-                  >
-                    <LogOut className="w-5 h-5" />
-                    Log Out
-                  </button>
-                </div>
+              )}
+              {role && (
+                <button
+                  onClick={handleLogout}
+                  className="w-full py-3 mt-4 flex items-center justify-center gap-2 text-red-600 bg-red-50 border border-red-100 rounded-xl font-semibold"
+                >
+                  <LogOut className="w-5 h-5" />
+                  Sign Out
+                </button>
               )}
             </div>
           </motion.div>
@@ -359,4 +305,6 @@ export default function Navbar() {
       </AnimatePresence>
     </motion.nav>
   );
-}
+};
+
+export default Navbar;

@@ -5,14 +5,14 @@ import { decode } from './app/libs/decodeToken';
 export function middleware(request) {
 
     const path = request.nextUrl.pathname;
-    
+
     // Only log in development to avoid Vercel function timeout
     if (process.env.NODE_ENV === 'development') {
         console.log('Middleware processing path:', path);
     }
 
     const publicPath = path === "/log-in" || path === "/sign-up" || path === "/email-verification";
-    
+
     // Get token with better error handling
     let token = '';
     try {
@@ -46,19 +46,19 @@ export function middleware(request) {
 
         try {
             const tokenDecode = decode(token);
-            
+
             // If token decode fails or returns null
             if (!tokenDecode) {
                 return NextResponse.redirect(new URL('/log-in', request.url))
             }
-            
+
             // Check if token has required fields
             if (!tokenDecode.role || !tokenDecode.user_id) {
                 return NextResponse.redirect(new URL('/log-in', request.url))
             }
-            
-            // Check admin role
-            if (tokenDecode.role !== "admin") {
+
+            // Check admin/organizer role
+            if (tokenDecode.role !== "admin" && tokenDecode.role !== "organizer") {
                 return NextResponse.redirect(new URL('/', request.url))
             }
         } catch (error) {
@@ -76,7 +76,7 @@ export function middleware(request) {
 export const config = {
     matcher: [
         "/my-tickets",
-        "/log-in", 
+        "/log-in",
         "/sign-up",
         "/email-verification",
         "/dashboard",

@@ -32,18 +32,23 @@ const LoginPage = () => {
             'Content-Type': 'application/json',
           }
         }
-      );    
+      );
 
       if (response.data.status === "success") {
         // Import tokenManager dynamically to avoid SSR issues
         const { tokenManager } = await import('@/app/libs/tokenManager');
-        
+
         // Set token in both cookie and localStorage
         if (response.data.token) {
           tokenManager.setToken(response.data.token);
         }
-        
-        // Small delay to ensure token is set before navigation
+
+        // Save user data for Navbar and other components
+        if (response.data.data) {
+          localStorage.setItem('user', JSON.stringify(response.data.data));
+        }
+
+        // Small delay to ensure token/user is set before navigation
         setTimeout(() => {
           router.push('/');
           window.location.reload(); // Force refresh to update auth state

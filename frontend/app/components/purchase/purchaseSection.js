@@ -1,6 +1,15 @@
 "use client";
 import React, { useState } from "react";
-import { Ticket, CheckCircle2, XCircle, Loader2, AlertCircle } from "lucide-react";
+import {
+  Ticket,
+  CheckCircle2,
+  XCircle,
+  Loader2,
+  AlertCircle,
+  ShieldCheck,
+  Zap,
+  Tag as TagIcon
+} from "lucide-react";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { isValidCoupon } from "@/app/libs/couponVerify";
@@ -15,10 +24,10 @@ const TicketPurchaseSection = ({ event }) => {
   const [couponStatus, setCouponStatus] = useState(null);
   const [finalPrice, setFinalPrice] = useState(event.price);
   const [loading, setLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState(""); // 🔹 error message state
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleValidateCoupon = async () => {
-    setErrorMessage(""); // reset error
+    setErrorMessage("");
     const data = await isValidCoupon(couponCode, event.event_id);
 
     if (data?.status === true) {
@@ -31,20 +40,14 @@ const TicketPurchaseSection = ({ event }) => {
   };
 
   const handlePurchase = async () => {
-    setErrorMessage(""); // reset error
-
+    setErrorMessage("");
     if (token == null) {
       router.push("/log-in");
       return;
     }
-
     setLoading(true);
-    console.log("Initiating purchase...");
-    
     try {
       const response = await purchaseFunction(event.event_id, couponStatus == "valid", couponCode);
-      console.log(response);
-
       if (response.status === "success") {
         window.location.href = response.data.url;
       } else {
@@ -52,124 +55,132 @@ const TicketPurchaseSection = ({ event }) => {
         setLoading(false);
       }
     } catch (error) {
-      console.error("Purchase failed:", error);
       setErrorMessage("Failed to complete purchase. Please try again.");
       setLoading(false);
     }
   };
 
-  const soldPercentage =
-    ((event.totalTickets - availableTickets) / event.totalTickets) * 100;
+  const soldPercentage = ((event.totalTickets - availableTickets) / event.totalTickets) * 100;
 
   return (
-    <div className="relative mt-10 bg-white/90 backdrop-blur-lg p-6 md:p-8 rounded-3xl shadow-2xl border border-gray-200 w-[95%] max-w-lg mx-auto overflow-hidden">
-      {/* Glow effect */}
-      <div className="absolute inset-0 -z-10 bg-gradient-to-br from-blue-100 to-indigo-100 opacity-40 rounded-3xl" />
+    <div className="bg-white rounded-[2rem] shadow-[0_15px_40px_rgba(0,0,0,0.08)] border border-gray-100 w-full overflow-hidden transition-all duration-300 hover:shadow-[0_20px_50px_rgba(0,0,0,0.12)]">
 
-      <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-6 text-center">
-        🎟️ Ticket Information
-      </h3>
-
-      {/* Tickets progress */}
-      <div className="mb-6">
-        <div className="flex justify-between text-sm font-medium text-gray-700 mb-2">
-          <span>Available Tickets</span>
-          <span>{availableTickets} left</span>
+      <div className="p-6 space-y-6">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600 shadow-sm border border-blue-100/50">
+              <Ticket className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="text-xl font-black text-gray-900 leading-none">Checkout</h3>
+              <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">Instant Booking</p>
+            </div>
+          </div>
+          <div className="px-3 py-1 bg-green-50 rounded-full border border-green-100 flex items-center gap-1.5">
+            <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+            <span className="text-[9px] font-black text-green-700 uppercase tracking-widest">Available</span>
+          </div>
         </div>
-        <div className="w-full h-3 bg-gray-200 rounded-full overflow-hidden">
-          <div
-            className="h-3 bg-gradient-to-r from-blue-500 to-indigo-600 transition-all duration-500"
-            style={{ width: `${soldPercentage}%` }}
-          />
-        </div>
-      </div>
 
-      {/* Price section */}
-      <div className="mb-6 flex justify-between items-center">
-        <span className="text-lg font-medium text-gray-700">Price</span>
-        <div className="flex items-baseline space-x-3">
-          <span
-            className={`text-xl sm:text-2xl font-bold ${couponStatus === "valid"
-                ? "text-gray-400 line-through"
-                : "text-gray-900"
-              }`}
-          >
-            ${event.price.toFixed(2)}
-          </span>
+        {/* Price Card */}
+        <div className="bg-gray-50 rounded-2xl p-5 border border-gray-100">
+          <div className="flex justify-between items-baseline mb-4">
+            <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">Grand Total</span>
+            <div className="text-right">
+              {couponStatus === "valid" && (
+                <p className="text-xs font-bold text-gray-400 line-through decoration-red-400">${event.price.toFixed(2)}</p>
+              )}
+              <p className="text-3xl font-black text-gray-900 tracking-tighter">${finalPrice.toFixed(2)}</p>
+            </div>
+          </div>
+
+          <div className="space-y-4 pt-4 border-t border-gray-200/50">
+            {/* Availability Line */}
+            <div className="space-y-2">
+              <div className="flex justify-between text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                <span>Seats Left</span>
+                <span className="text-blue-600">{availableTickets} / {event.totalTickets}</span>
+              </div>
+              <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-blue-600 rounded-full transition-all duration-700"
+                  style={{ width: `${Math.max(soldPercentage, 5)}%` }}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Promo Code */}
+        <div className="space-y-3">
+          <div className="flex gap-2">
+            <input
+              type="text"
+              value={couponCode}
+              onChange={(e) => setCouponCode(e.target.value)}
+              placeholder="Promo code"
+              className="flex-1 px-4 py-3 rounded-xl bg-gray-50 border border-gray-100 text-gray-900 font-bold placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:bg-white transition-all text-xs"
+            />
+            <button
+              onClick={handleValidateCoupon}
+              className="px-4 py-3 bg-gray-900 hover:bg-black text-white rounded-xl font-bold transition-all text-[10px] active:scale-95 disabled:opacity-30"
+              disabled={!couponCode}
+            >
+              Apply
+            </button>
+          </div>
+
           {couponStatus === "valid" && (
-            <span className="text-xl sm:text-2xl font-bold text-green-600">
-              ${finalPrice.toFixed(2)}
-            </span>
+            <div className="flex items-center gap-2 px-3 py-2 bg-green-50 text-green-700 rounded-lg border border-green-100 text-[9px] font-bold uppercase tracking-wider">
+              <CheckCircle2 className="w-3.5 h-3.5" /> Discount Applied
+            </div>
+          )}
+          {couponStatus === "invalid" && (
+            <div className="flex items-center gap-2 px-3 py-2 bg-red-50 text-red-600 rounded-lg border border-red-100 text-[9px] font-bold uppercase tracking-wider">
+              <XCircle className="w-3.5 h-3.5" /> Invalid Code
+            </div>
           )}
         </div>
-      </div>
 
-      {/* Coupon Field */}
-      <div className="mb-6">
-        <label className="text-sm font-medium text-gray-600 mb-1 block">
-          Coupon Code
-        </label>
-        <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
-          <input
-            type="text"
-            value={couponCode}
-            onChange={(e) => setCouponCode(e.target.value)}
-            placeholder="SAVE10"
-            className="w-full flex-1 px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-          />
+        {/* Error Message */}
+        {errorMessage && (
+          <div className="p-3 bg-red-50 text-red-600 rounded-xl border border-red-100 flex items-start gap-2">
+            <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+            <p className="text-[10px] font-bold leading-tight">{errorMessage}</p>
+          </div>
+        )}
+
+        {/* Action Button */}
+        <div className="pt-2">
           <button
-            onClick={handleValidateCoupon}
-            className="w-full sm:w-auto px-5 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl font-semibold hover:scale-105 hover:shadow-lg transition-all text-sm"
+            onClick={handlePurchase}
+            disabled={availableTickets === 0 || loading}
+            className={`group relative w-full px-6 py-4 rounded-xl font-black text-base transition-all duration-300 shadow-xl ${availableTickets > 0 && !loading
+                ? "bg-gray-900 hover:bg-black text-white hover:scale-[1.01] active:scale-[0.98]"
+                : "bg-gray-100 text-gray-300 cursor-not-allowed"
+              }`}
           >
-            Apply
+            {loading ? (
+              <div className="flex items-center justify-center gap-2">
+                <Loader2 className="w-5 h-5 animate-spin text-blue-400" />
+                <span className="tracking-tight">Processing...</span>
+              </div>
+            ) : (
+              <div className="flex items-center justify-center gap-2 relative z-10">
+                <Zap className="w-5 h-5 text-yellow-400" />
+                <span className="tracking-tight">{availableTickets > 0 ? "Book Tickets" : "Sold Out"}</span>
+              </div>
+            )}
           </button>
         </div>
 
-        {/* Coupon Status */}
-        {couponStatus === "valid" && (
-          <div className="flex items-center mt-2 text-sm text-green-600 font-medium">
-            <CheckCircle2 className="w-4 h-4 mr-1" />
-            Coupon applied!
-          </div>
-        )}
-        {couponStatus === "invalid" && (
-          <div className="flex items-center mt-2 text-sm text-red-600 font-medium">
-            <XCircle className="w-4 h-4 mr-1" />
-            Invalid coupon code.
-          </div>
-        )}
-      </div>
-
-
-      {/* 🔹 Error Message */}
-      {errorMessage && (
-        <div className="flex items-center mb-4 text-sm text-red-600 font-medium">
-          <AlertCircle className="w-5 h-5 mr-2" />
-          {errorMessage}
+        {/* Trust Badge */}
+        <div className="pt-2 flex items-center justify-center gap-2 text-gray-400 text-[9px] font-bold uppercase tracking-widest">
+          <ShieldCheck className="w-3 h-3 text-blue-600" />
+          Secure Transaction Guaranteed
         </div>
-      )}
-
-      {/* Buy Button */}
-      <button
-        onClick={handlePurchase}
-        disabled={availableTickets === 0 || loading}
-        className={`w-full px-8 py-3 rounded-full font-bold text-lg text-white flex items-center justify-center space-x-2 transition-all duration-300 ${availableTickets > 0 && !loading
-            ? "bg-gradient-to-r from-blue-600 to-indigo-700 hover:scale-[1.02] shadow-lg shadow-blue-500/30"
-            : "bg-gray-400 cursor-not-allowed"
-          }`}
-      >
-        {loading ? (
-          <>
-            <Loader2 className="w-6 h-6 animate-spin" />
-            <span>Processing...</span>
-          </>
-        ) : (
-          <>
-            <Ticket className="w-6 h-6" />
-            <span>{availableTickets > 0 ? "Buy Ticket" : "Sold Out"}</span>
-          </>
-        )}
-      </button>
+      </div>
     </div>
   );
 };
