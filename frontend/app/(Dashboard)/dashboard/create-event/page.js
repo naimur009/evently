@@ -50,6 +50,14 @@ const CreateEventPage = () => {
     fetchCategory();
   }, []);
 
+  const handleEventDateChange = (e) => {
+    setFormData((prev) => ({ ...prev, event_date: e.target.value }));
+  };
+
+  const handleDeadlineChange = (e) => {
+    setFormData((prev) => ({ ...prev, deadline: e.target.value }));
+  };
+
   const handleChange = (e) => {
     const { name, value, type } = e.target;
     setFormData((prev) => {
@@ -431,7 +439,7 @@ const CreateEventPage = () => {
                   id="event_date"
                   name="event_date"
                   value={formData.event_date}
-                  onChange={handleChange}
+                  onChange={handleEventDateChange}
                   className={`mt-1 block w-full pl-10 pr-3 py-3 border rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm ${errors.event_date ? "border-red-500" : "border-gray-300"
                     }`}
                 />
@@ -456,7 +464,7 @@ const CreateEventPage = () => {
                   id="deadline"
                   name="deadline"
                   value={formData.deadline}
-                  onChange={handleChange}
+                  onChange={handleDeadlineChange}
                   className={`mt-1 block w-full pl-10 pr-3 py-3 border rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm ${errors.deadline ? "border-red-500" : "border-gray-300"
                     }`}
                 />
