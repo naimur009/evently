@@ -44,30 +44,58 @@ const mockData = {
   ],
 };
 
-const MetricCard = ({ title, value, trend, icon: Icon, color, delay }) => (
-  <motion.div
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ delay }}
-    className="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 group"
-  >
-    <div className="flex justify-between items-start mb-4">
-      <div className={`p-3 rounded-2xl bg-${color}-50 text-${color}-600 group-hover:scale-110 transition-transform`}>
-        <Icon size={24} />
+// Color mapping for MetricCard to avoid dynamic Tailwind classes
+const colorStyles = {
+  indigo: {
+    bg: 'bg-indigo-50',
+    text: 'text-indigo-600',
+    border: 'border-indigo-100'
+  },
+  emerald: {
+    bg: 'bg-emerald-50',
+    text: 'text-emerald-600',
+    border: 'border-emerald-100'
+  },
+  orange: {
+    bg: 'bg-orange-50',
+    text: 'text-orange-600',
+    border: 'border-orange-100'
+  },
+  blue: {
+    bg: 'bg-blue-50',
+    text: 'text-blue-600',
+    border: 'border-blue-100'
+  },
+};
+
+const MetricCard = ({ title, value, trend, icon: Icon, color, delay }) => {
+  const styles = colorStyles[color] || colorStyles.indigo;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay }}
+      className="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 group h-full flex flex-col justify-between"
+    >
+      <div className="flex justify-between items-start mb-4">
+        <div className={`p-3 rounded-2xl ${styles.bg} ${styles.text} border ${styles.border} group-hover:scale-110 transition-transform`}>
+          <Icon size={24} />
+        </div>
+        {trend && (
+          <span className={`flex items-center gap-0.5 text-xs font-bold ${trend.startsWith('+') ? 'text-emerald-600' : 'text-rose-600'}`}>
+            {trend}
+            {trend.startsWith('+') ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />}
+          </span>
+        )}
       </div>
-      {trend && (
-        <span className={`flex items-center gap-0.5 text-xs font-bold ${trend.startsWith('+') ? 'text-emerald-500' : 'text-rose-500'}`}>
-          {trend}
-          {trend.startsWith('+') ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />}
-        </span>
-      )}
-    </div>
-    <div>
-      <p className="text-xs font-black text-gray-400 uppercase tracking-widest mb-1">{title}</p>
-      <p className="text-2xl font-black text-gray-900 tracking-tight">{value}</p>
-    </div>
-  </motion.div>
-);
+      <div>
+        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">{title}</p>
+        <p className="text-2xl md:text-3xl font-black text-gray-900 tracking-tight break-words">{value}</p>
+      </div>
+    </motion.div>
+  );
+};
 
 const Dashboard = () => {
   const [mounted, setMounted] = useState(false);
@@ -79,28 +107,26 @@ const Dashboard = () => {
   if (!mounted) return null;
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-8 pb-10 max-w-7xl mx-auto">
       {/* Header Section */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-6">
         <div>
-          <h1 className="text-4xl font-black text-gray-900 tracking-tight mb-2">
+          <h1 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight mb-2">
             Overview
           </h1>
-          <p className="text-gray-500 font-medium">Welcome back, here&apos;s what&apos;s happening today.</p>
+          <p className="text-gray-500 font-medium text-sm md:text-base">Welcome back, here&apos;s what&apos;s happening today.</p>
         </div>
-        <div className="flex items-center gap-3">
-          <Link
-            href="/dashboard/create-event"
-            className="flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white rounded-2xl font-bold shadow-lg shadow-indigo-200 hover:bg-indigo-700 transition-all active:scale-95"
-          >
-            <Plus size={20} />
-            Create Event
-          </Link>
-        </div>
+        <Link
+          href="/dashboard/create-event"
+          className="flex items-center justify-center gap-2 w-full md:w-auto px-6 py-3 bg-indigo-600 text-white rounded-2xl font-bold shadow-lg shadow-indigo-200 hover:bg-indigo-700 transition-all active:scale-95"
+        >
+          <Plus size={20} />
+          Create Event
+        </Link>
       </div>
 
       {/* Primary Metrics */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
         <MetricCard
           title="Total Revenue"
           value={mockData.totalSales}
@@ -135,38 +161,38 @@ const Dashboard = () => {
       </div>
 
       {/* Analytics Main Flow */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8">
         {/* Sales Chart Card */}
         <motion.div
           initial={{ opacity: 0, scale: 0.98 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.5 }}
-          className="lg:col-span-8 bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm"
+          className="lg:col-span-8 bg-white p-6 md:p-8 rounded-[2.5rem] border border-gray-100 shadow-sm"
         >
-          <div className="flex items-center justify-between mb-10">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
             <div>
               <h2 className="text-xl font-black text-gray-900 tracking-tight">Sales Analytics</h2>
               <p className="text-gray-400 text-sm font-medium">Monthly revenue performance</p>
             </div>
-            <div className="flex gap-2">
-              <button className="px-4 py-2 text-xs font-bold text-gray-500 hover:text-indigo-600 rounded-lg hover:bg-indigo-50 transition-colors">7 Days</button>
-              <button className="px-4 py-2 text-xs font-bold text-white bg-indigo-600 rounded-lg shadow-md shadow-indigo-100">30 Days</button>
+            <div className="flex bg-gray-50 p-1 rounded-xl w-full sm:w-auto">
+              <button className="flex-1 sm:flex-none px-4 py-2 text-xs font-bold text-gray-500 hover:text-indigo-600 rounded-lg hover:bg-white transition-all">7 Days</button>
+              <button className="flex-1 sm:flex-none px-4 py-2 text-xs font-bold text-white bg-indigo-600 rounded-lg shadow-sm">30 Days</button>
             </div>
           </div>
 
-          <div className="h-[300px] w-full mt-4 flex items-end justify-between gap-4">
+          <div className="h-[250px] md:h-[300px] w-full mt-4 flex items-end justify-between gap-2 md:gap-4 overflow-x-auto pb-4 md:pb-0">
             {mockData.salesChart.map((item, idx) => {
               const height = (item.sales / 6000) * 100;
               return (
-                <div key={item.name} className="flex-1 flex flex-col items-center gap-4 group">
-                  <div className="relative w-full flex justify-center">
+                <div key={item.name} className="flex-1 min-w-[40px] flex flex-col items-center gap-4 group">
+                  <div className="relative w-full flex justify-center h-full items-end">
                     <motion.div
                       initial={{ height: 0 }}
                       animate={{ height: `${height}%` }}
                       transition={{ duration: 1, delay: 0.6 + (idx * 0.1) }}
-                      className="w-full max-w-[40px] bg-indigo-50 rounded-t-xl group-hover:bg-indigo-600 transition-colors duration-300 relative"
+                      className="w-full max-w-[32px] md:max-w-[48px] bg-indigo-50 rounded-t-xl group-hover:bg-indigo-600 transition-colors duration-300 relative border border-indigo-100"
                     >
-                      <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-gray-900 text-white px-2 py-1 rounded text-[10px] font-bold opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-gray-900 text-white px-2 py-1 rounded text-[10px] font-bold opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
                         ${item.sales}
                       </div>
                     </motion.div>
@@ -183,7 +209,7 @@ const Dashboard = () => {
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.6 }}
-          className="lg:col-span-4 space-y-8"
+          className="lg:col-span-4 space-y-6"
         >
           {/* Recent Users */}
           <div className="bg-white p-6 rounded-[2.5rem] border border-gray-100 shadow-sm">
@@ -191,26 +217,26 @@ const Dashboard = () => {
               <h3 className="font-black text-gray-900 tracking-tight">New Users</h3>
               <Link href="/dashboard/users" className="text-xs font-bold text-indigo-600 hover:underline">View All</Link>
             </div>
-            <div className="space-y-4">
+            <div className="space-y-3">
               {mockData.recentUsers.map(user => (
                 <div key={user.id} className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-2xl transition-colors">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600 font-bold text-sm">
+                  <div className="flex items-center gap-3 min-w-0 flex-1">
+                    <div className="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600 font-bold text-sm shrink-0 border border-indigo-100">
                       {user.avatar}
                     </div>
-                    <div>
-                      <p className="text-sm font-bold text-gray-900">{user.name}</p>
-                      <p className="text-[10px] text-gray-400 font-medium">{user.email}</p>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-bold text-gray-900 truncate">{user.name}</p>
+                      <p className="text-[10px] text-gray-400 font-medium truncate">{user.email}</p>
                     </div>
                   </div>
-                  <span className="text-[10px] text-gray-400 font-bold uppercase">{user.date}</span>
+                  <span className="text-[10px] text-gray-400 font-bold uppercase shrink-0 whitespace-nowrap ml-2">{user.date}</span>
                 </div>
               ))}
             </div>
           </div>
 
           {/* System Health / Quick Stats */}
-          <div className="bg-indigo-600 p-8 rounded-[2.5rem] text-white shadow-xl shadow-indigo-100 flex flex-col justify-between h-[200px] relative overflow-hidden">
+          <div className="bg-gradient-to-br from-indigo-600 to-indigo-700 p-8 rounded-[2.5rem] text-white shadow-xl shadow-indigo-200 flex flex-col justify-between h-[200px] relative overflow-hidden">
             <div className="relative z-10">
               <Activity size={32} className="mb-4 text-indigo-200" />
               <p className="text-sm font-bold text-indigo-100 mb-1">System Health</p>
@@ -228,54 +254,84 @@ const Dashboard = () => {
         transition={{ delay: 0.7 }}
         className="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden"
       >
-        <div className="p-8 border-b border-gray-50 flex items-center justify-between">
+        <div className="p-6 md:p-8 border-b border-gray-50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h2 className="text-xl font-black text-gray-900 tracking-tight">Top Performing Events</h2>
             <p className="text-gray-400 text-sm font-medium">A summary of your most successful events</p>
           </div>
-          <Link href="/dashboard/events" className="text-sm font-bold text-indigo-600 bg-indigo-50 px-4 py-2 rounded-xl">View All Events</Link>
+          <Link href="/dashboard/events" className="text-sm font-bold text-indigo-600 bg-indigo-50 px-4 py-2 rounded-xl text-center hover:bg-indigo-100 transition-colors">View All Events</Link>
         </div>
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="bg-gray-50/50">
-                <th className="px-8 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.15em]">Event</th>
-                <th className="px-8 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.15em]">Category</th>
-                <th className="px-8 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.15em]">Sales</th>
-                <th className="px-8 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.15em]">Status</th>
-                <th className="px-8 py-4 text-right"></th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-50">
-              {mockData.recentEvents.map(event => (
-                <tr key={event.id} className="hover:bg-gray-50 transition-colors group">
-                  <td className="px-8 py-5">
-                    <p className="text-sm font-bold text-gray-900">{event.name}</p>
-                  </td>
-                  <td className="px-8 py-5">
-                    <span className="text-xs font-bold text-gray-500 bg-gray-100 px-3 py-1 rounded-lg">
+
+        {/* Responsive Table Implementation */}
+        <div className="w-full">
+          {/* Desktop Table Header */}
+          <div className="hidden md:flex bg-gray-50/50 border-b border-gray-50">
+            <div className="flex-1 px-8 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Event</div>
+            <div className="w-1/6 px-8 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Category</div>
+            <div className="w-1/6 px-8 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Sales</div>
+            <div className="w-1/6 px-8 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Status</div>
+            <div className="w-16 px-8 py-4"></div>
+          </div>
+
+          <div className="divide-y divide-gray-50">
+            {mockData.recentEvents.map(event => (
+              <div key={event.id} className="group hover:bg-gray-50/50 transition-colors">
+                {/* Desktop Row layout */}
+                <div className="hidden md:flex items-center">
+                  <div className="flex-1 px-8 py-5">
+                    <p className="text-sm font-black text-gray-900">{event.name}</p>
+                  </div>
+                  <div className="w-1/6 px-8 py-5">
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-gray-100 text-gray-600 text-xs font-bold uppercase tracking-wider">
                       {event.category}
                     </span>
-                  </td>
-                  <td className="px-8 py-5">
+                  </div>
+                  <div className="w-1/6 px-8 py-5">
                     <p className="text-sm font-black text-gray-900">${event.sales.toLocaleString()}</p>
-                  </td>
-                  <td className="px-8 py-5">
-                    <span className={`px-3 py-1 text-[10px] font-black uppercase tracking-widest rounded-full shadow-sm
-                      ${event.status === 'Active' ? 'bg-emerald-50 text-emerald-600' :
-                        event.status === 'Sold Out' ? 'bg-rose-50 text-rose-600' : 'bg-blue-50 text-blue-600'}`}>
+                  </div>
+                  <div className="w-1/6 px-8 py-5">
+                    <span className={`px-3 py-1 text-[10px] font-black uppercase tracking-widest rounded-full border whitespace-nowrap
+                      ${event.status === 'Active' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' :
+                        event.status === 'Sold Out' ? 'bg-rose-50 text-rose-600 border-rose-100' : 'bg-blue-50 text-blue-600 border-blue-100'}`}>
                       {event.status}
                     </span>
-                  </td>
-                  <td className="px-8 py-5 text-right">
-                    <button className="p-2 text-gray-300 hover:text-gray-900 transition-colors">
+                  </div>
+                  <div className="w-16 px-8 py-5 text-right">
+                    <button className="p-2 text-gray-300 hover:text-gray-900 transition-colors rounded-xl hover:bg-gray-100">
                       <MoreVertical size={18} />
                     </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                  </div>
+                </div>
+
+                {/* Mobile Card Layout */}
+                <div className="md:hidden p-5 flex flex-col gap-4">
+                  <div className="flex justify-between items-start">
+                    <div className="flex-1 min-w-0">
+                      <p className="text-base font-black text-gray-900 mb-2">{event.name}</p>
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-gray-100 text-gray-600 text-xs font-bold uppercase tracking-wider">
+                        {event.category}
+                      </span>
+                    </div>
+                    <button className="p-2 -mr-2 text-gray-300 hover:text-gray-900 rounded-xl hover:bg-gray-100">
+                      <MoreVertical size={18} />
+                    </button>
+                  </div>
+
+                  <div className="flex items-center justify-between border-t border-gray-50 pt-4">
+                    <div>
+                      <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Sales</p>
+                      <p className="text-sm font-black text-gray-900">${event.sales.toLocaleString()}</p>
+                    </div>
+                    <span className={`px-3 py-1 text-[10px] font-black uppercase tracking-widest rounded-full border
+                      ${event.status === 'Active' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' :
+                        event.status === 'Sold Out' ? 'bg-rose-50 text-rose-600 border-rose-100' : 'bg-blue-50 text-blue-600 border-blue-100'}`}>
+                      {event.status}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </motion.div>
     </div>

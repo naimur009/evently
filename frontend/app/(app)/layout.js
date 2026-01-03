@@ -25,9 +25,10 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        suppressHydrationWarning
       >
         <div className="flex flex-col min-h-screen">
-          <Navbar/>
+          <Navbar />
           <main className="flex-grow">
             {children}
           </main>

@@ -104,7 +104,7 @@ export default function EventsManagement() {
   const currentEvents = filteredEvents.slice((currentPage - 1) * eventsPerPage, currentPage * eventsPerPage);
 
   return (
-    <div className="space-y-8 pb-10">
+    <div className="space-y-8 pb-10 max-w-7xl mx-auto">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
@@ -151,7 +151,8 @@ export default function EventsManagement() {
 
       {/* Events Table */}
       <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden">
-        <div className="overflow-x-auto">
+        {/* Desktop Table View */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-left">
             <thead>
               <tr className="bg-gray-50/50">
@@ -253,6 +254,62 @@ export default function EventsManagement() {
               )}
             </tbody>
           </table>
+        </div>
+
+        {/* Mobile Card View */}
+        <div className="md:hidden p-4 grid grid-cols-1 gap-4">
+          {loading ? (
+            Array(3).fill(0).map((_, i) => (
+              <div key={i} className="animate-pulse bg-white p-4 rounded-2xl border border-gray-50 h-32"></div>
+            ))
+          ) : currentEvents.length > 0 ? (
+            currentEvents.map((event) => (
+              <div key={event._id} className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex flex-col gap-4">
+                <div className="flex justify-between items-start">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center shrink-0 border border-indigo-100">
+                      <CalendarDays className="text-indigo-600" size={18} />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-black text-gray-900 leading-tight">{event.event_title}</h3>
+                      <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{event.category?.categoryName || "General"}</span>
+                    </div>
+                  </div>
+                  <StatusPill status={event.status} />
+                </div>
+
+                <div className="grid grid-cols-2 gap-3 border-t border-gray-50 pt-3">
+                  <div>
+                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Date</p>
+                    <p className="text-xs font-bold text-gray-700 flex items-center gap-1">
+                      {new Date(event.event_date).toLocaleDateString('en-US', { day: 'numeric', month: 'short' })}
+                    </p>
+                    <p className="text-[10px] text-gray-400 flex items-center gap-1 mt-0.5"><Clock size={10} /> {event.time}</p>
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Venue</p>
+                    <p className="text-xs font-bold text-gray-700 flex items-center gap-1 truncate">
+                      <MapPin size={12} /> {event.venue}
+                    </p>
+                    <p className="text-[10px] text-gray-400 truncate">{event.city}</p>
+                  </div>
+                </div>
+
+                <div className="flex justify-end gap-2 pt-2">
+                  <Link
+                    href={`/dashboard/events/${event._id}`}
+                    className="flex-1 py-2 rounded-xl bg-indigo-50 text-indigo-600 text-xs font-bold text-center hover:bg-indigo-100 transition-colors"
+                  >
+                    View Analytics
+                  </Link>
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="text-center py-10">
+              <p className="text-gray-400 font-medium">No events found.</p>
+            </div>
+          )}
         </div>
 
         {/* Pagination */}

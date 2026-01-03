@@ -7,7 +7,7 @@ import userModel from "../models/user.model.js";
 
 export const createEventServices = async (req, res) => {
     try {
-        
+
         const event_data = {
             event_title: req.body.event_title,
             description: req.body.description,
@@ -47,7 +47,7 @@ export const updateEventServices = async (req, res) => {
 
         const id = new mongoose.Types.ObjectId(req.params.eventID);
         const data = req.body
-        
+
 
         const updatedEvent = await eventModel.findByIdAndUpdate(
             {
@@ -86,7 +86,7 @@ export const updateEventServices = async (req, res) => {
 
 export const deleteEventServices = async (req, res) => {
     try {
-        
+
         const eventID = new mongoose.Types.ObjectId(req.params.eventID);
 
         const deletedEvent = await eventModel.findByIdAndDelete(eventID);
@@ -123,7 +123,7 @@ export const createCouponServices = async (req, res) => {
             coupon_code: req.body.couponData.coupon_code,
             discount: req.body.couponData.discount
         }
-        
+
 
         const coupon = await couponModel.create(coupon_data)
 
@@ -144,10 +144,10 @@ export const createCouponServices = async (req, res) => {
 
 export const deleteCouponServices = async (req, res) => {
     try {
-     
+
         const coupon_id = new mongoose.Types.ObjectId(req.params.couponID);
-        
-        
+
+
         const deletedCoupon = await couponModel.findByIdAndDelete(coupon_id)
 
 
@@ -185,7 +185,7 @@ export const salesReportServices = async (req, res) => {
                     _id: id
                 }
             },
-            
+
             {
                 $lookup: {
                     from: "users",
@@ -203,19 +203,19 @@ export const salesReportServices = async (req, res) => {
                 }
             },
 
-            { $unwind: "$createdBy" },
-            { $unwind: "$category" },
+            { $unwind: { path: "$createdBy", preserveNullAndEmptyArrays: true } },
+            { $unwind: { path: "$category", preserveNullAndEmptyArrays: true } },
 
 
             {
                 $project: {
-                   
-                    createdBy:{
-                        name:1
+
+                    createdBy: {
+                        name: 1
                     },
-                    category:{
+                    category: {
                         categoryName: 1
-                    },  
+                    },
                     event_title: 1,
                     description: 1,
                     event_date: 1,
@@ -228,11 +228,11 @@ export const salesReportServices = async (req, res) => {
                     deadline: 1,
                     start_date: 1,
                     time: 1,
-                    organizer:1
+                    organizer: 1
                 }
             }
         ]);
-        
+
         if (!event_data) {
             return {
                 status: "failed",
@@ -256,15 +256,15 @@ export const salesReportServices = async (req, res) => {
                 }
             }
         ])
-        
+
 
         // find coupon data
-        const coupon_data = await couponModel.find({event:id}, {coupon_code:1, discount:1,total_used:1 });
+        const coupon_data = await couponModel.find({ event: id }, { coupon_code: 1, discount: 1, total_used: 1 });
 
         const report = {
             event_data,
             payment,
-            coupons:coupon_data
+            coupons: coupon_data
         }
 
         return {
@@ -275,7 +275,7 @@ export const salesReportServices = async (req, res) => {
 
     } catch (error) {
         console.log(error);
-        
+
         return {
             status: "failed",
             message: "Error generating sales report",
@@ -287,7 +287,7 @@ export const salesReportServices = async (req, res) => {
 
 export const userDetailsServices = async (req, res) => {
     try {
-        
+
         const userdata = await userModel.find(
             {},
             {
@@ -316,7 +316,7 @@ export const singleUserDetailsServices = async (req, res) => {
     try {
         const ID = req.params.userID
         const userdata = await userModel.findOne(
-            {_id: ID},
+            { _id: ID },
             {
                 name: 1,
                 status: 1,
@@ -324,8 +324,8 @@ export const singleUserDetailsServices = async (req, res) => {
                 email: 1
             }
         );
-        
-        
+
+
         return {
             status: "success",
             message: "User data fetched successfully",
@@ -359,8 +359,8 @@ export const updateUserDetailsServices = async (req, res) => {
                 new: true
             }
         )
-        
-        
+
+
         return {
             status: "success",
             message: "User data fetched successfully",
@@ -380,8 +380,8 @@ export const deleteUserServices = async (req, res) => {
 
         const id = new mongoose.Types.ObjectId(req.params.userID);
         const deleteData = await userModel.findByIdAndDelete(id)
-        
-        
+
+
         return {
             status: "success",
             message: "User deleted successfully",

@@ -19,12 +19,15 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`} suppressHydrationWarning>
-      <body className="antialiased">
+      <body className="antialiased" suppressHydrationWarning>
         <div className="flex min-h-screen bg-gray-50/50">
-          <aside className="h-screen sticky top-0 z-50">
+          <aside className="hidden lg:block h-screen sticky top-0 z-50">
             <Sidebar />
           </aside>
-          <main className="flex-1 overflow-y-auto p-4 md:p-8">
+          <div className="lg:hidden">
+            <Sidebar />
+          </div>
+          <main className="flex-1 overflow-y-auto p-4 lg:p-8">
             {children}
           </main>
         </div>
