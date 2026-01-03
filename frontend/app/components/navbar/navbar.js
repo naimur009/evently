@@ -133,12 +133,14 @@ const Navbar = () => {
         <div className="flex justify-between items-center">
 
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 group">
-            <div className="relative">
-              <div className="absolute inset-0 bg-blue-500 blur-lg opacity-10 group-hover:opacity-20 transition-opacity duration-300 rounded-full"></div>
-              <Rocket className="w-8 h-8 text-blue-600 relative z-10 transform group-hover:-translate-y-1 group-hover:rotate-12 transition-transform duration-300" />
+          <Link href="/" className="flex items-center gap-2.5 group">
+            <div className="relative flex-shrink-0">
+              <div className="absolute inset-0 bg-indigo-500 blur-lg opacity-20 group-hover:opacity-40 transition-opacity duration-300 rounded-lg"></div>
+              <div className="relative w-9 h-9 rounded-lg bg-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-200 group-hover:scale-105 transition-transform duration-300">
+                <span className="text-white font-bold text-xl">E</span>
+              </div>
             </div>
-            <span className="text-2xl font-black text-gray-900 tracking-tight">
+            <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600 tracking-tight">
               Evently
             </span>
           </Link>

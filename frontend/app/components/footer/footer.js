@@ -9,16 +9,14 @@ const FooterSection = () => {
 
           {/* Brand Column */}
           <div className="space-y-6">
-            <Link href="/" className="flex items-center gap-3 group">
-              <div className="relative">
-                <div className="absolute inset-0 bg-blue-500 blur-md opacity-20 group-hover:opacity-30 transition-opacity duration-300 rounded-lg"></div>
-                <div className="relative bg-blue-600 p-2 rounded-lg">
-                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                  </svg>
+            <Link href="/" className="flex items-center gap-2.5 group">
+              <div className="relative flex-shrink-0">
+                <div className="absolute inset-0 bg-indigo-500 blur-lg opacity-10 group-hover:opacity-30 transition-opacity duration-300 rounded-lg"></div>
+                <div className="relative w-9 h-9 rounded-lg bg-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-200 group-hover:scale-105 transition-transform duration-300">
+                  <span className="text-white font-bold text-xl">E</span>
                 </div>
               </div>
-              <span className="text-2xl font-black text-gray-900 tracking-tight group-hover:text-blue-600 transition-colors duration-300">
+              <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600 tracking-tight group-hover:from-indigo-600 group-hover:to-indigo-400 transition-all duration-300">
                 Evently
               </span>
             </Link>

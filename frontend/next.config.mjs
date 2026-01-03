@@ -4,7 +4,7 @@ const nextConfig = {
   experimental: {
     turbo: undefined
   },
-  
+
   // Configure images
   images: {
     domains: ['localhost'],
@@ -19,16 +19,16 @@ const nextConfig = {
       },
     ],
   },
-  
+
   // Environment variables
   env: {
     NEXT_PUBLIC_BACKEND_URL: process.env.NEXT_PUBLIC_BACKEND_URL,
     NEXT_PUBLIC_FRONTEND_URL: process.env.NEXT_PUBLIC_FRONTEND_URL,
   },
-  
+
   // Ensure proper routing for Vercel
   trailingSlash: false,
-  
+
   // Handle client-side routing
   async rewrites() {
     return [
