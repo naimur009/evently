@@ -17,9 +17,17 @@ const app = express();
 // security middleware
 app.use(cookieParser());
 
+const allowedOrigins = [
+    config.FRONTEND_URL,
+    "http://localhost:3000",
+    "http://localhost:3005",
+    "http://localhost:5173",
+    "http://localhost:5174",
+];
+
 app.use(cors({
-  origin: config.FRONTEND_URL, // frontend URL
-  credentials: true                // allow cookies to be sent
+    origin: allowedOrigins,
+    credentials: true                // allow cookies to be sent
 }));
 
 app.use(helmet());
@@ -27,12 +35,12 @@ app.use(hpp());
 
 
 //parsing
-app.use(express.json({limit: config.JSON_LIMIT}));
-app.use(urlencoded({extended:config.URL_ENCODED, limit:config.URL_LIMIT}));
+app.use(express.json({ limit: config.JSON_LIMIT }));
+app.use(urlencoded({ extended: config.URL_ENCODED, limit: config.URL_LIMIT }));
 
 
 // rate limit
-app.use(rateLimit({windowMs:config.RATE_LIMIT, max:config.RATE_LIMIT_MAX}));
+app.use(rateLimit({ windowMs: config.RATE_LIMIT, max: config.RATE_LIMIT_MAX }));
 
 
 // cacheing
@@ -51,7 +59,7 @@ mongoose
             console.log(`http://localhost:${config.PORT}`)
         })
     })
-    .catch((error)=>{
+    .catch((error) => {
         console.log(error);
     })
 
