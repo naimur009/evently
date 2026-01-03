@@ -17,6 +17,7 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 
 const Sidebar = () => {
   const pathname = usePathname();
@@ -197,7 +198,7 @@ const Sidebar = () => {
             <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 p-[2px] shadow-sm">
               <div className="w-full h-full rounded-full bg-white flex items-center justify-center overflow-hidden">
                 {user.avatar ? (
-                  <img src={user.avatar} alt="Avatar" className="w-full h-full object-cover" />
+                  <Image src={user.avatar} alt="Avatar" width={40} height={40} className="w-full h-full object-cover" unoptimized />
                 ) : (
                   <span className="text-sm font-bold text-indigo-600">
                     {user.name.charAt(0)}
