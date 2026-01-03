@@ -50,15 +50,12 @@ const CreateEventPage = () => {
     fetchCategory();
   }, []);
 
-  const handleInputChange = (e) => {
-    const { name, value, type } = e.target;
-    const inputValue = type === "number" ? parseFloat(value) : value;
-    setFormData({ ...formData, [name]: inputValue });
-  };
-
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    const { name, value, type } = e.target;
+    setFormData((prev) => {
+      const inputValue = type === "number" ? (value === "" ? "" : parseFloat(value)) : value;
+      return { ...prev, [name]: inputValue };
+    });
   };
 
   const validateForm = () => {
@@ -141,7 +138,7 @@ const CreateEventPage = () => {
                   id="event_title"
                   name="event_title"
                   value={formData.event_title ?? ""}
-                  onChange={handleInputChange}
+                  onChange={handleChange}
                   className={`
         mt-1 block w-full pl-10 pr-3 py-3 border rounded-lg shadow-sm
         focus:ring-indigo-500 focus:border-indigo-500 text-sm
@@ -167,7 +164,7 @@ const CreateEventPage = () => {
                 id="description"
                 name="description"
                 rows="5"
-                onChange={handleInputChange}
+                onChange={handleChange}
                 value={formData.description}
                 className={`mt-1 block w-full px-3 py-2 border rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm ${errors.description ? "border-red-500" : "border-gray-300"
                   }`}
@@ -196,7 +193,7 @@ const CreateEventPage = () => {
                   id="city"
                   name="city"
                   value={formData.city ?? ""}
-                  onChange={handleInputChange}
+                  onChange={handleChange}
                   className={`
         mt-1 block w-full pl-10 pr-3 py-3 border rounded-lg shadow-sm
         focus:ring-indigo-500 focus:border-indigo-500 text-sm
@@ -230,7 +227,7 @@ const CreateEventPage = () => {
                   id="venue"
                   name="venue"
                   value={formData.venue ?? ""}
-                  onChange={handleInputChange}
+                  onChange={handleChange}
                   className={`
         mt-1 block w-full pl-10 pr-3 py-3 border rounded-lg shadow-sm
         focus:ring-indigo-500 focus:border-indigo-500 text-sm
@@ -263,7 +260,7 @@ const CreateEventPage = () => {
                   id="organizer"
                   name="organizer"
                   value={formData.organizer}
-                  onChange={handleInputChange}
+                  onChange={handleChange}
                   className={`
                     mt-1 block w-full pl-10 pr-3 py-3 border rounded-lg shadow-sm
                     focus:ring-indigo-500 focus:border-indigo-500 text-sm
@@ -339,7 +336,7 @@ const CreateEventPage = () => {
                 id="image"
                 name="image"
                 placeholder="Paste your image URL here..."
-                onChange={handleInputChange}
+                onChange={handleChange}
                 value={formData.image}
                 className="mt-2 block w-full px-3 py-2 border rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm border-gray-300"
               />
@@ -367,7 +364,7 @@ const CreateEventPage = () => {
                     id="price"
                     name="price"
                     value={formData.price ?? ""}
-                    onChange={handleInputChange}
+                    onChange={handleChange}
                     min={1}
                     step={1}
                     className={`
@@ -401,7 +398,7 @@ const CreateEventPage = () => {
                     id="ticket_limit"
                     name="ticket_limit"
                     value={formData.ticket_limit ?? ""}
-                    onChange={handleInputChange}
+                    onChange={handleChange}
                     min={1}
                     step={1}
                     className={`
@@ -484,7 +481,7 @@ const CreateEventPage = () => {
                   id="time"
                   name="time"
                   value={formData.time ?? ""}
-                  onChange={handleInputChange}
+                  onChange={handleChange}
                   className={`
         mt-1 block w-full pl-10 pr-3 py-3 border rounded-lg shadow-sm
         focus:ring-indigo-500 focus:border-indigo-500 text-sm
