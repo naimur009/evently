@@ -94,34 +94,34 @@ const Sidebar = () => {
       animate={collapsed ? "collapsed" : "expanded"}
       variants={sidebarVariants}
       transition={{ type: "spring", stiffness: 200, damping: 25 }}
-      className="relative h-screen bg-white border-r border-gray-100 flex flex-col shadow-[4px_0_24px_rgba(0,0,0,0.02)] z-50"
+      className="relative h-[100dvh] bg-white border-r border-gray-100 flex flex-col shadow-[4px_0_24px_rgba(0,0,0,0.02)] z-50 transition-all duration-300"
     >
       {/* Header */}
-      <div className="flex items-center justify-between h-20 px-6 border-b border-gray-50">
-        <AnimatePresence mode="wait">
-          {!collapsed && (
-            <motion.div
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -10 }}
-              className="flex items-center gap-2.5"
-            >
-              <div className="w-9 h-9 rounded-lg bg-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-200">
-                <span className="text-white font-bold text-xl">E</span>
-              </div>
-              <h1 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600 tracking-tight">
+      <div className={`flex items-center h-20 border-b border-gray-50 transition-all duration-300 ${collapsed ? "justify-center px-2 gap-2" : "justify-between px-6"}`}>
+        <div className={`flex items-center gap-2.5 overflow-hidden ${collapsed ? "" : "flex-1"}`}>
+          <div className="flex-shrink-0 w-9 h-9 rounded-lg bg-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-200">
+            <span className="text-white font-bold text-xl">E</span>
+          </div>
+          <AnimatePresence>
+            {!collapsed && (
+              <motion.h1
+                initial={{ opacity: 0, width: 0 }}
+                animate={{ opacity: 1, width: "auto" }}
+                exit={{ opacity: 0, width: 0 }}
+                className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600 tracking-tight whitespace-nowrap"
+              >
                 Evently
-              </h1>
-            </motion.div>
-          )}
-        </AnimatePresence>
+              </motion.h1>
+            )}
+          </AnimatePresence>
+        </div>
 
         <button
           onClick={() => setCollapsed(!collapsed)}
-          className={`p-2 rounded-xl transition-all duration-200 ${collapsed ? "mx-auto ring-1 ring-gray-100" : "hover:bg-gray-50"
+          className={`p-2 rounded-xl transition-all duration-200 flex-shrink-0 ${collapsed ? "bg-gray-50 text-gray-900 shadow-sm" : "hover:bg-gray-50 text-gray-400"
             }`}
         >
-          {collapsed ? <Menu size={20} className="text-gray-500" /> : <ChevronLeft size={20} className="text-gray-400" />}
+          {collapsed ? <Menu size={18} /> : <ChevronLeft size={20} />}
         </button>
       </div>
 

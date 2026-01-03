@@ -24,7 +24,7 @@ export default function RootLayout({ children }) {
           <aside className="h-screen sticky top-0 z-50">
             <Sidebar />
           </aside>
-          <main className="flex-1 overflow-y-auto p-8">
+          <main className="flex-1 overflow-y-auto p-4 md:p-8">
             {children}
           </main>
         </div>
