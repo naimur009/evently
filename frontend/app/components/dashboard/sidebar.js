@@ -24,6 +24,7 @@ const Sidebar = () => {
   const pathname = usePathname();
   const [active, setActive] = useState("");
   const [collapsed, setCollapsed] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [user, setUser] = useState({ name: "Admin User", email: "admin@evently.com", role: "admin", avatar: "" });
 
@@ -86,12 +87,6 @@ const Sidebar = () => {
             <span className="text-white font-bold text-xl">E</span>
           </div>
         )}
-        <button
-          onClick={() => setCollapsed(!collapsed)}
-          className={`p-2 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-gray-900 transition-all ${collapsed ? 'hidden' : ''}`}
-        >
-          <ChevronLeft size={18} />
-        </button>
       </div>
 
       {/* Navigation */}
@@ -234,43 +229,182 @@ const Sidebar = () => {
     </nav>
   );
 
-  // Mobile Bottom Navigation
+  // Mobile Bottom Navigation with Drawer
   const MobileBottomNav = () => {
-    const mainItems = menuItems.filter(item => item.section === "main").slice(0, 4);
+    const mainItems = menuItems.filter(item => item.section === "main").slice(0, 3);
 
     return (
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-[100] bg-white border-t border-gray-200 shadow-2xl pb-safe">
-        <div className="flex items-center justify-around px-2 py-3">
-          {mainItems.map((item) => {
-            const isActive = active === item.name;
-            const Icon = item.icon;
-            return (
-              <Link
-                key={item.name}
-                href={item.link}
-                onClick={() => setActive(item.name)}
-                className="flex-1"
+      <>
+        {/* Mobile Drawer Overlay */}
+        <AnimatePresence>
+          {mobileMenuOpen && (
+            <>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setMobileMenuOpen(false)}
+                className="lg:hidden fixed inset-0 bg-black/20 backdrop-blur-sm z-[90]"
+              />
+              <motion.div
+                initial={{ y: "100%" }}
+                animate={{ y: 0 }}
+                exit={{ y: "100%" }}
+                transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                className="lg:hidden fixed bottom-0 left-0 right-0 z-[95] bg-white rounded-t-3xl shadow-2xl max-h-[80vh] overflow-y-auto"
               >
-                <div className="flex flex-col items-center gap-1 py-2 px-3 relative">
-                  <div className={`p-2 rounded-xl transition-all duration-200 ${isActive ? "bg-indigo-600" : "bg-transparent"}`}>
-                    <Icon
-                      size={20}
-                      className={isActive ? "text-white" : "text-gray-400"}
-                      strokeWidth={isActive ? 2.5 : 2}
-                    />
-                  </div>
-                  <span className={`text-[10px] font-bold transition-colors ${isActive ? "text-indigo-600" : "text-gray-500"}`}>
-                    {item.name}
-                  </span>
-                  {isActive && (
-                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-1 bg-indigo-600 rounded-full" />
-                  )}
+                {/* Drawer Header */}
+                <div className="sticky top-0 bg-white border-b border-gray-100 px-6 py-4 flex items-center justify-between rounded-t-3xl">
+                  <h2 className="text-lg font-black text-gray-900">Menu</h2>
+                  <button
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="p-2 rounded-xl hover:bg-gray-100 text-gray-400"
+                  >
+                    <X size={20} />
+                  </button>
                 </div>
-              </Link>
-            );
-          })}
+
+                {/* User Profile in Drawer */}
+                <div className="px-6 py-4 border-b border-gray-100">
+                  <div className="flex items-center gap-3 p-3 rounded-xl bg-gray-50">
+                    <div className="relative">
+                      <div className="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 p-[2px]">
+                        <div className="w-full h-full rounded-full bg-white flex items-center justify-center overflow-hidden">
+                          {user.avatar ? (
+                            <Image src={user.avatar} alt="Avatar" width={48} height={48} className="w-full h-full object-cover" unoptimized />
+                          ) : (
+                            <span className="text-base font-bold text-indigo-600">{user.name.charAt(0)}</span>
+                          )}
+                        </div>
+                      </div>
+                      <div className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-emerald-500 border-2 border-white rounded-full"></div>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-bold text-gray-900 truncate">{user.name}</p>
+                      <p className="text-xs text-gray-500 uppercase tracking-tight">{user.role}</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* All Menu Items */}
+                <div className="px-6 py-4 space-y-6">
+                  {/* Main Section */}
+                  <div>
+                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">Main</p>
+                    <div className="space-y-1">
+                      {menuItems.filter(item => item.section === "main").map((item) => {
+                        const isActive = active === item.name;
+                        const Icon = item.icon;
+                        return (
+                          <Link
+                            key={item.name}
+                            href={item.link}
+                            onClick={() => {
+                              setActive(item.name);
+                              setMobileMenuOpen(false);
+                            }}
+                            className="block"
+                          >
+                            <div
+                              className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200
+                                ${isActive
+                                  ? "bg-gradient-to-r from-indigo-600 to-indigo-700 text-white shadow-lg shadow-indigo-200"
+                                  : "text-gray-600 hover:bg-gray-50"
+                                }`}
+                            >
+                              <Icon size={20} className={isActive ? "text-white" : "text-gray-400"} />
+                              <span className="font-semibold text-sm">{item.name}</span>
+                            </div>
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* System Section */}
+                  <div>
+                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">System</p>
+                    <div className="space-y-1">
+                      {menuItems.filter(item => item.section === "system").map((item) => {
+                        const Icon = item.icon;
+                        return (
+                          <Link
+                            key={item.name}
+                            href={item.link}
+                            onClick={() => setMobileMenuOpen(false)}
+                            className="block"
+                          >
+                            <div
+                              className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200
+                                ${item.danger
+                                  ? "text-rose-600 hover:bg-rose-50"
+                                  : "text-gray-600 hover:bg-gray-50"
+                                }`}
+                            >
+                              <Icon size={20} />
+                              <span className="font-semibold text-sm">{item.name}</span>
+                            </div>
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Bottom Padding for Safe Area */}
+                <div className="h-20"></div>
+              </motion.div>
+            </>
+          )}
+        </AnimatePresence>
+
+        {/* Bottom Navigation Bar */}
+        <div className="lg:hidden fixed bottom-0 left-0 right-0 z-[100] bg-white border-t border-gray-200 shadow-2xl">
+          <div className="flex items-center justify-around px-1 py-2">
+            {mainItems.map((item) => {
+              const isActive = active === item.name;
+              const Icon = item.icon;
+              return (
+                <Link
+                  key={item.name}
+                  href={item.link}
+                  onClick={() => setActive(item.name)}
+                  className="flex-1"
+                >
+                  <div className="flex flex-col items-center gap-0.5 py-1.5 px-2 relative">
+                    <div className={`p-1.5 rounded-lg transition-all duration-200 ${isActive ? "bg-indigo-600" : "bg-transparent"}`}>
+                      <Icon
+                        size={18}
+                        className={isActive ? "text-white" : "text-gray-400"}
+                        strokeWidth={isActive ? 2.5 : 2}
+                      />
+                    </div>
+                    <span className={`text-[9px] font-bold transition-colors ${isActive ? "text-indigo-600" : "text-gray-500"}`}>
+                      {item.name}
+                    </span>
+                    {isActive && (
+                      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-6 h-0.5 bg-indigo-600 rounded-full" />
+                    )}
+                  </div>
+                </Link>
+              );
+            })}
+
+            {/* More Button */}
+            <button
+              onClick={() => setMobileMenuOpen(true)}
+              className="flex-1"
+            >
+              <div className="flex flex-col items-center gap-0.5 py-1.5 px-2">
+                <div className="p-1.5 rounded-lg bg-transparent">
+                  <Menu size={18} className="text-gray-400" strokeWidth={2} />
+                </div>
+                <span className="text-[9px] font-bold text-gray-500">More</span>
+              </div>
+            </button>
+          </div>
         </div>
-      </div>
+      </>
     );
   };
 
