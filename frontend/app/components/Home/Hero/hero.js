@@ -23,7 +23,7 @@ const HeroSection = () => {
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          className="lg:w-1/2 flex flex-col items-center lg:items-start text-center lg:text-left"
+          className="w-full lg:w-1/2 flex flex-col items-center lg:items-start text-center lg:text-left"
         >
           {/* Badge */}
           <motion.div
@@ -36,17 +36,17 @@ const HeroSection = () => {
           </motion.div>
 
           {/* Main headline */}
-          <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-gray-900 mb-6 leading-tight">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-gray-900 mb-6 leading-tight">
             Discover Your <br /> Next <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600">Adventure</span>
           </h1>
 
           {/* Sub-headline */}
-          <p className="text-lg md:text-xl text-gray-600 mb-10 max-w-xl leading-relaxed">
+          <p className="text-base sm:text-lg md:text-xl text-gray-600 mb-8 sm:mb-10 max-w-xl leading-relaxed">
             Secure tickets to concerts, sports events, festivals, and more. Your journey to unforgettable moments starts here.
           </p>
 
           {/* Call-to-action buttons */}
-          <div className="flex flex-col sm:flex-row gap-5 w-full sm:w-auto">
+          <div className="flex flex-col sm:flex-row gap-4 sm:gap-5 w-full sm:w-auto">
             <Link href="/all-events" className="w-full sm:w-auto">
               <motion.button
                 whileHover={{ scale: 1.05 }}
@@ -73,7 +73,7 @@ const HeroSection = () => {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-          className="lg:w-1/2 flex justify-center relative"
+          className="w-full lg:w-1/2 flex justify-center relative"
         >
           <div className="grid grid-cols-2 gap-4 w-full max-w-lg relative z-10">
             {/* First image */}

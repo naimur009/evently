@@ -14,15 +14,15 @@ export const couponServices = async (req, res) => {
 
         const coupon = await couponModel.findOne(
             {
-                event:event_id,
-                coupon_code : coupon_code
+                event: event_id,
+                coupon_code: coupon_code
             }
         )
-        
+
         return {
             status: "success",
             message: "Valid coupon",
-            discount:coupon.discount
+            discount: coupon.discount
         }
     } catch (error) {
         return {
@@ -34,6 +34,7 @@ export const couponServices = async (req, res) => {
 }
 
 export const paymentService = async (req, res) => {
+
     try {
 
         const store_id = config.STORE_ID;
@@ -52,6 +53,14 @@ export const paymentService = async (req, res) => {
                 _id: new mongoose.Types.ObjectId(req.headers.user_id)
             }
         )
+
+        if (!customer) {
+            return {
+                status: "failed",
+                message: "User not found",
+                data: null
+            };
+        }
 
 
         // coupon discount
@@ -83,7 +92,7 @@ export const paymentService = async (req, res) => {
 
         const transaction_id = new mongoose.Types.ObjectId().toString();
 
-        
+
         const data = {
             total_amount: netAmount,
             currency: 'BDT',
@@ -114,7 +123,7 @@ export const paymentService = async (req, res) => {
             ship_postcode: 1000,
             ship_country: 'Bangladesh',
         };
-        
+
 
         const sslcz = new SSLCommerzPayment(store_id, store_passwd, is_live);
         const apiResponse = await sslcz.init(data);
@@ -130,7 +139,7 @@ export const paymentService = async (req, res) => {
             payment_method: null,
             transaction_id: transaction_id
         })
-        
+
 
         if (apiResponse?.GatewayPageURL) {
             return {
@@ -142,7 +151,7 @@ export const paymentService = async (req, res) => {
                 }
             };
         } else {
-            
+
             return {
                 status: "failed",
                 message: "Failed to retrieve payment gateway URL",
@@ -150,6 +159,7 @@ export const paymentService = async (req, res) => {
             };
         }
     } catch (error) {
+        console.error("Payment Service Error Detail:", error); // Added detailed logging
         return {
             status: "error",
             message: "Payment process failed",

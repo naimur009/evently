@@ -65,7 +65,7 @@ const CreateEventPage = ({ params }) => {
         if (!formData.deadline) newErrors.deadline = "Deadline is required.";
         if (new Date(formData.deadline) <= new Date())
             newErrors.deadline = "Deadline must be in the future.";
-        if(formData.ticket_limit < formData.ticket_sold){
+        if (formData.ticket_limit < formData.ticket_sold) {
             newErrors.ticket_limit = "Ticket limit cannot be less than tickets sold.";
         }
 
@@ -91,7 +91,7 @@ const CreateEventPage = ({ params }) => {
                     deadline: formData.deadline,
                     time: formData.time,
                 }
-            )          
+            )
 
         } catch (error) {
 
@@ -520,8 +520,8 @@ const CreateEventPage = ({ params }) => {
                                 </div>
                                 <input
                                     type="date"
-                                    id="event_date"
-                                    name="event_date"
+                                    id="deadline"
+                                    name="deadline"
                                     value={formData.deadline ? new Date(formData.deadline).toISOString().split("T")[0] : ""}
                                     onChange={handleChange}
                                     className={`

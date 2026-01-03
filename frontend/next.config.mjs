@@ -7,8 +7,13 @@ const nextConfig = {
 
   // Configure images
   images: {
-    domains: ['localhost'],
+    dangerouslyAllowSVG: true,
+
     remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'placehold.co',
+      },
       {
         protocol: 'https',
         hostname: '**',

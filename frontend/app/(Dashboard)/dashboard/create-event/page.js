@@ -35,6 +35,15 @@ const CreateEventPage = () => {
   const [errors, setErrors] = useState({});
   const [category, setCategory] = useState([]);
 
+  // Independent state for dates to prevent coupling
+  const [eventDate, setEventDate] = useState("");
+  const [deadline, setDeadline] = useState("");
+
+  // Sync independent states to formData for submission
+  useEffect(() => {
+    setFormData(prev => ({ ...prev, event_date: eventDate, deadline: deadline }));
+  }, [eventDate, deadline]);
+
   const router = useRouter();
 
   // Fetch categories once on mount
@@ -51,11 +60,11 @@ const CreateEventPage = () => {
   }, []);
 
   const handleEventDateChange = (e) => {
-    setFormData((prev) => ({ ...prev, event_date: e.target.value }));
+    setEventDate(e.target.value);
   };
 
   const handleDeadlineChange = (e) => {
-    setFormData((prev) => ({ ...prev, deadline: e.target.value }));
+    setDeadline(e.target.value);
   };
 
   const handleChange = (e) => {
@@ -127,6 +136,7 @@ const CreateEventPage = () => {
         <form
           onSubmit={handleSubmit}
           className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4"
+          autoComplete="off"
         >
           {/* Left Column */}
           <div>
@@ -438,7 +448,7 @@ const CreateEventPage = () => {
                   type="date"
                   id="event_date"
                   name="event_date"
-                  value={formData.event_date}
+                  value={eventDate}
                   onChange={handleEventDateChange}
                   className={`mt-1 block w-full pl-10 pr-3 py-3 border rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm ${errors.event_date ? "border-red-500" : "border-gray-300"
                     }`}
@@ -463,7 +473,7 @@ const CreateEventPage = () => {
                   type="date"
                   id="deadline"
                   name="deadline"
-                  value={formData.deadline}
+                  value={deadline}
                   onChange={handleDeadlineChange}
                   className={`mt-1 block w-full pl-10 pr-3 py-3 border rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm ${errors.deadline ? "border-red-500" : "border-gray-300"
                     }`}

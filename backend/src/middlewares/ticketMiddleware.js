@@ -34,8 +34,10 @@ export const ticketAvaiablityCheck = async (req, res, next) => {
         }
 
         // ticket deadline
-        const ticket_deadline = event_data.deadline;
-        if (ticket_deadline < Date.now()) {
+        const ticket_deadline = new Date(event_data.deadline);
+        ticket_deadline.setHours(23, 59, 59, 999); // Set to end of day to include the deadline date
+
+        if (ticket_deadline < new Date()) {
             return res.status(400).json({
                 status: "failed",
                 message: "Ticket is not available. Deadline passed."
